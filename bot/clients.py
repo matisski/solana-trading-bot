@@ -18,13 +18,20 @@ class Http:
             }
         )
 
-    def get_json(self, url: str, params: dict | None = None):
-        return self._request("GET", url, params=params)
+    def get_json(self, url: str, params: dict | None = None, retry_429: bool = True):
+        return self._request("GET", url, params=params, retry_429=retry_429)
 
     def post_json(self, url: str, body: dict):
         return self._request("POST", url, json_body=body)
 
-    def _request(self, method: str, url: str, params: dict | None = None, json_body: dict | None = None):
+    def _request(
+        self,
+        method: str,
+        url: str,
+        params: dict | None = None,
+        json_body: dict | None = None,
+        retry_429: bool = True,
+    ):
         last = "brak odpowiedzi"
         for attempt in range(3):
             try:
@@ -39,6 +46,8 @@ class Http:
                 last = type(exc).__name__
                 time.sleep(1.0 * (attempt + 1))
                 continue
+            if response.status_code == 429 and not retry_429:
+                return None, "HTTP 429"
             if response.status_code in (429, 500, 502, 503, 504):
                 last = f"HTTP {response.status_code}"
                 time.sleep(1.2 * (attempt + 1))
@@ -89,6 +98,7 @@ class DexScreener:
         pairs: list[dict] = []
         warnings: list[str] = []
         for chunk in _chunks(mints, 30):
+            time.sleep(0.2)
             url = "https://api.dexscreener.com/tokens/v1/solana/" + ",".join(chunk)
             data, err = self.http.get_json(url)
             if err or not isinstance(data, list):

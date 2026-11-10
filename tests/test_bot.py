@@ -9,7 +9,8 @@ from pathlib import Path
 
 import yaml
 
-from bot.config import USDC_MINT, ConfigError, load_config, trading_mode
+from bot.config import SOL_MINT, USDC_MINT, ConfigError, load_config, trading_mode
+from bot.discover import _gecko_id, _gecko_mint, _memecoin
 from bot.engine import bot_enabled, parse_loop_seconds, seconds_until_next_cycle
 from bot.reconcile import estimate_entry, is_meaningful, split_conflict, union_csv, union_state
 from bot.logic import decide_exit, impact_percent, sell_raw_amount, split_cost
@@ -289,6 +290,25 @@ class RepoTests(unittest.TestCase):
         self.assertNotIn("\n  run: |", text)
         self.assertNotIn("while True", (ROOT / "main.py").read_text(encoding="utf-8"))
         self.assertNotIn("while True", (ROOT / "bot" / "engine.py").read_text(encoding="utf-8"))
+
+
+class DiscoverTests(unittest.TestCase):
+    def test_skips_sol_and_keeps_the_memecoin(self):
+        meme = "Mint111111111111111111111111111111111111111"
+        self.assertEqual(_memecoin(SOL_MINT, meme), meme)
+        self.assertEqual(_memecoin(meme, USDC_MINT), meme)
+        self.assertIsNone(_memecoin(SOL_MINT, USDC_MINT))
+
+    def test_gecko_id_is_the_mint_after_the_chain(self):
+        meme = "Mint111111111111111111111111111111111111111"
+        self.assertEqual(_gecko_id({"id": f"solana_{meme}"}), meme)
+        row = {
+            "relationships": {
+                "base_token": {"data": {"id": f"solana_{SOL_MINT}"}},
+                "quote_token": {"data": {"id": f"solana_{meme}"}},
+            }
+        }
+        self.assertEqual(_gecko_mint(row), meme)
 
 
 class ReconcileTests(unittest.TestCase):

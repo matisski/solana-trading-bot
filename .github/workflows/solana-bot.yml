@@ -5,6 +5,8 @@
 # Ponowna rejestracja zapasowego zegara co 5 minut. Sam łańcuch uruchomień się nie zmienia.
 # Ręczne wznowienie łańcucha. Zasady handlu bez zmian.
 # Próg płynności jest w desk.yaml. Ten komentarz tylko kolejkuje nowe uruchomienie.
+# Szersza lista kandydatów. Filtry kupna bez zmian.
+# Kolejne uruchomienie z większą pulą adresów. Filtry bez zmian.
 
 name: Solana Memecoin Bot
 

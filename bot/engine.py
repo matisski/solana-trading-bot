@@ -9,6 +9,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from bot.clients import DexScreener, Http, Jupiter, RugCheck
+from bot.discover import MintSearch
 from bot.config import SOL_MINT, USDT_MINT, Config, ConfigError, load_config, paper_reason, trading_mode
 from bot.logic import (
     decide_exit,
@@ -89,6 +90,7 @@ def run(root: Path | None = None) -> int:
     jupiter = Jupiter(http, cfg.jupiter_quote_url, cfg.jupiter_swap_url)
     dex = DexScreener(http)
     rugs = RugCheck(http)
+    search = MintSearch(http)
 
     keypair = None
     rpc = None
@@ -127,7 +129,7 @@ def run(root: Path | None = None) -> int:
                 mode=mode,
                 report=report,
                 secret=secret,
-                http_clients=(jupiter, dex, rugs),
+                http_clients=(jupiter, dex, rugs, search),
                 rpc=rpc,
                 keypair=keypair,
                 owner=owner,
@@ -196,7 +198,7 @@ def _one_cycle(
     allow_scan,
 ) -> bool:
     """Exits first, then at most one buy. Returns True when a buy scan ran."""
-    jupiter, dex, rugs = http_clients
+    jupiter, dex, rugs, search = http_clients
     state.roll_day(now.strftime("%Y-%m-%d"))
     state.prune_cooldowns(now, cfg.cooldown_minutes)
     report.day = now.strftime("%Y-%m-%d")
@@ -277,7 +279,7 @@ def _one_cycle(
         _say("Szukam tokenów...", secret)
         try:
             _look_for_buys(
-                cfg, state, mode, dex, rugs, jupiter, rpc, keypair, owner, report, now
+                cfg, state, mode, dex, rugs, jupiter, rpc, keypair, owner, report, now, search
             )
         except Exception as exc:
             report.warnings.append(f"Skan przerwany ({type(exc).__name__}).")
@@ -682,13 +684,15 @@ def _settle_pending(pos, cfg, state, rpc, report, now) -> str:
     return "wait"
 
 
-def _look_for_buys(cfg, state, mode, dex, rugs, jupiter, rpc, keypair, owner, report, now):
+def _look_for_buys(cfg, state, mode, dex, rugs, jupiter, rpc, keypair, owner, report, now, search):
     report.skips.clear()
-    mints, warnings = dex.trending_mints()
-    report.warnings.extend(warnings)
-    report.discovered = len(mints)
+    found = search.discover()
+    report.warnings.extend(found.warnings)
+    report.sources = found.counts
+    report.discovered = len(found.mints)
+    mints = found.mints
     if not mints:
-        report.warnings.append("DexScreener nie zwrócił tokenów Solana.")
+        report.warnings.append("Żadne źródło nie zwróciło tokenów Solana.")
         return
     pairs, pair_warnings = dex.pairs_for(mints)
     report.warnings.extend(pair_warnings)

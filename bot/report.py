@@ -19,6 +19,7 @@ class Report:
         self.max_open = 3
         self.discovered = 0
         self.screened_out = 0
+        self.sources: list[tuple[str, int]] = []
         self.cycles = 1
         self.notes: list[str] = []
         self.warnings: list[str] = []
@@ -80,11 +81,13 @@ class Report:
             "GitHub często spóźnia uruchomienie co 5 minut. "
             "Stop nie zadziała w tej samej sekundzie, w której cena spadnie."
         )
-        if self.discovered:
+        if self.discovered or self.sources:
             lines.append(
-                f"DexScreener: {self.discovered} tokenów Solana, "
+                f"Kandydaci: {self.discovered} unikalnych adresów Solana, "
                 f"{self.screened_out} odpadło na prostym filtrze."
             )
+            for label, count in self.sources:
+                lines.append(f"- {label}: {count}")
         lines.append("")
 
         if self.notes:
