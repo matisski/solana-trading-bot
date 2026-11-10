@@ -1,6 +1,7 @@
 # Harmonogram co 5 minut plus ręczne uruchomienie.
 # Nie dodawaj tu zdarzenia "push": zapis stanu nie może odpalać bota od nowa.
 # GitHub i tak często spóźnia cron. Stop-loss nie jest natychmiastowy.
+# Odświeżenie rejestracji cron w GitHubie. Zegar zostaje bez zmian.
 
 name: Solana Memecoin Bot
 
