@@ -1,25 +1,27 @@
 {
   "positions": [
     {
-      "mint": "EJv8TgQfN6gtYN8Z6KGyBeNPbVYmogmudfxiRA2Fpump",
-      "symbol": "GTA",
+      "mint": "HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump",
+      "symbol": "GATO",
       "decimals": 6,
-      "amount_raw": "39943223562",
-      "entry_price_usd": 0.0001251776785676545,
+      "amount_raw": "600938460",
+      "entry_price_usd": 0.008320319521569646,
       "cost_usd_remaining": 5.0,
-      "peak_price_usd": 0.0001251776785676545,
+      "peak_price_usd": 0.008320319521569646,
       "took_partial_tp": false,
-      "opened_at": "2026-11-10T18:14:56.423040+00:00",
+      "opened_at": "2026-11-10T18:36:24.356157+00:00",
       "mode": "live",
-      "pair_address": "F66UVPJ1bpQrknxE99BJTUQmG9SmiPnPrQiRUe96YcFg",
-      "entry_tx": "2RgGNMm99uMV7dzK57exFvDYRQk32tRR8vBwrW2xyc8UR6KDevTCFQe86DXKc8NfZmGvjcF16TB5eonAqkfQ5p9E"
+      "pair_address": "5E3dXLXGwmTDCokA51WYYaKttjFZBwqCoyUHBUi5gt2m",
+      "entry_tx": "4dcNT4mAq32KuNR76r3fxXfK6JLFVrTRf32JmrH1bsMK2FuSaSpWNTzkhhUe8sFKwwYJ5VVanv6Uy6fTdtnaqnB2"
     }
   ],
-  "cooldowns": {},
+  "cooldowns": {
+    "EJv8TgQfN6gtYN8Z6KGyBeNPbVYmogmudfxiRA2Fpump": "2026-11-10T18:36:24.356157+00:00"
+  },
   "daily": {
     "date_utc": "2026-11-10",
-    "live_realized_pnl_usd": 0.0,
+    "live_realized_pnl_usd": -0.7928,
     "paper_realized_pnl_usd": 0.0
   },
-  "last_run_at": "2026-11-10T18:14:56.423040+00:00"
+  "last_run_at": "2026-11-10T18:36:24.356157+00:00"
 }
