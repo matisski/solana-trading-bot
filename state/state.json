@@ -13,6 +13,34 @@
       "mode": "live",
       "pair_address": "5GxdoPcK2LJ6QYcJ3uvtC37tgsFHma55ULFkufTYe49R",
       "entry_tx": "3mRKD2qffkKtWrna59uxEMbgPbCnNMWg81QHXuQhDsWvLeajoEcfw9VYFQVwGtMzMp544VhWxvsz5Brse9o9VYRa"
+    },
+    {
+      "mint": "HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump",
+      "symbol": "GATO",
+      "decimals": 6,
+      "amount_raw": "602533501",
+      "entry_price_usd": 0.00829508637671785,
+      "cost_usd_remaining": 4.998067,
+      "peak_price_usd": 0.00829508637671785,
+      "took_partial_tp": false,
+      "opened_at": "2026-11-10T18:54:57.000189+00:00",
+      "mode": "live",
+      "pair_address": "5E3dXLXGwmTDCokA51WYYaKttjFZBwqCoyUHBUi5gt2m",
+      "entry_tx": "4whBgSfrKY8YBRZrjHtVHucjk7uhwLPU9PQm2ubNJwVfkYRuHfix5MUARLnXT2KHwopf7V6wSQ4Cy613idLk8MJq"
+    },
+    {
+      "mint": "2HhH7LwfNHrxqMrSoXZ6Ri7GdmRYSJ4e8qSra9Krpump",
+      "symbol": "forg",
+      "decimals": 6,
+      "amount_raw": "41719120611",
+      "entry_price_usd": 0.00011984912257910009,
+      "cost_usd_remaining": 5.0,
+      "peak_price_usd": 0.00011984912257910009,
+      "took_partial_tp": false,
+      "opened_at": "2026-11-10T18:57:27.000359+00:00",
+      "mode": "live",
+      "pair_address": "4sHXry7sVmew899ozJaxgkprrbQLqogHZmrHYswcmRjU",
+      "entry_tx": "XWNQ2FpShG2ETj1QNbSvCFnrcuxbtk19zXLVnYfADTttrbc3ovYzJkvLCDpkH7hdxVYJVKv9nzmKhod96jSqY5x"
     }
   ],
   "cooldowns": {
@@ -25,5 +53,5 @@
     "live_realized_pnl_usd": -2.6239,
     "paper_realized_pnl_usd": 0.0
   },
-  "last_run_at": "2026-11-10T18:49:45.063858+00:00"
+  "last_run_at": "2026-11-10T18:58:57.651695+00:00"
 }
