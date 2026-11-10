@@ -1,28 +1,14 @@
 {
   "positions": [
     {
-      "mint": "BWJfBNeXpapG7uoqByp5KSwWgCQba8QcDmA2DQiEpump",
-      "symbol": "Leonida",
-      "decimals": 6,
-      "amount_raw": "15229744841",
-      "entry_price_usd": 0.0003282944151921368,
-      "cost_usd_remaining": 4.99984,
-      "peak_price_usd": 0.0003826599237769856,
-      "took_partial_tp": false,
-      "opened_at": "2026-11-10T18:38:25.219851+00:00",
-      "mode": "live",
-      "pair_address": "5GxdoPcK2LJ6QYcJ3uvtC37tgsFHma55ULFkufTYe49R",
-      "entry_tx": "3mRKD2qffkKtWrna59uxEMbgPbCnNMWg81QHXuQhDsWvLeajoEcfw9VYFQVwGtMzMp544VhWxvsz5Brse9o9VYRa"
-    },
-    {
       "mint": "HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump",
       "symbol": "GATO",
       "decimals": 6,
-      "amount_raw": "602815105",
+      "amount_raw": "567815105",
       "entry_price_usd": 0.008294417240921658,
       "entry_mark_price": 0.0082450422339699,
-      "cost_usd_remaining": 5.0,
-      "peak_price_usd": 0.008570120352242997,
+      "cost_usd_remaining": 4.709695,
+      "peak_price_usd": 0.008868293491417422,
       "took_partial_tp": false,
       "opened_at": "2026-11-10T19:10:20.715383+00:00",
       "mode": "live",
@@ -33,12 +19,13 @@
   "cooldowns": {
     "EJv8TgQfN6gtYN8Z6KGyBeNPbVYmogmudfxiRA2Fpump": "2026-11-10T18:36:24.356157+00:00",
     "66KbLTkLpPBPdhkRZs8XZk7Yw1DwuV3KYHKNTvmbpump": "2026-11-10T18:47:43.149270+00:00",
-    "Ho7iohoM6UN96yoxzBNzz9aXZpNW3AyUVuEmBdAQpump": "2026-11-10T18:49:45.063858+00:00"
+    "Ho7iohoM6UN96yoxzBNzz9aXZpNW3AyUVuEmBdAQpump": "2026-11-10T18:49:45.063858+00:00",
+    "BWJfBNeXpapG7uoqByp5KSwWgCQba8QcDmA2DQiEpump": "2026-11-10T19:36:58.771805+00:00"
   },
   "daily": {
     "date_utc": "2026-11-10",
-    "live_realized_pnl_usd": -2.6239,
+    "live_realized_pnl_usd": -2.3807,
     "paper_realized_pnl_usd": 0.0
   },
-  "last_run_at": "2026-11-10T19:28:28.112396+00:00"
+  "last_run_at": "2026-11-10T19:39:29.089800+00:00"
 }
