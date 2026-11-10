@@ -13,7 +13,7 @@ Portfel na Solscan: https://solscan.io/account/J6MKXaZmbpRXkSfiNBGTm52R7ffQacH1m
 **Sprawdzenia w tym uruchomieniu:** 9 (ceny co około 30 sekund).
 
 GitHub często spóźnia uruchomienie co 5 minut. Stop nie zadziała w tej samej sekundzie, w której cena spadnie.
-DexScreener: 46 tokenów Solana, 43 odpadło na prostym filtrze.
+DexScreener: 48 tokenów Solana, 44 odpadło na prostym filtrze.
 
 ## Sprzedaże
 - brak
@@ -22,11 +22,11 @@ DexScreener: 46 tokenów Solana, 43 odpadło na prostym filtrze.
 - brak
 
 ## Otwarte pozycje
-- GATO `HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump` — wejście 0.0082944172, teraz 0.010242523 (+23.5%), wartość około 5.82 USDC, szczyt 0.010319791
+- GATO `HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump` — wejście 0.0082944172, teraz 0.0099808599 (+20.3%), wartość około 5.67 USDC, szczyt 0.010328892
 
 ## Pominięte tokeny
-- CBUCKS (`DtcicPCKTKeAh7TDEzTym3hXeoHAoMiBdYJhMYxZpump`): za mały obrót godzinowy (20843 USD)
-- OnlyCats (`BAftaSb1HVqBn5723w72WLcXU7YASSgmVxQxJJAJpump`): za mała płynność (3177 USD)
-- MAYA (`HqZZhbXWm17vnY29uj4cgczNUWo9o8VLUWsN4RH8pump`): za mała płynność (1697 USD)
-- THUG (`HoqJaoes6yfL8YEsHGfENwVKT7LrAPy97ZDg9hmBu4Ep`): za mała płynność (46086 USD)
-- DACITY (`5tBXkPVh716zSXHNZSr8i1PX7e6Uuj46JnBLdYchpump`): już zbyt mocno urosło (241% w godzinę)
+- CBUCKS (`DtcicPCKTKeAh7TDEzTym3hXeoHAoMiBdYJhMYxZpump`): za mały obrót godzinowy (19990 USD)
+- OnlyCats (`BAftaSb1HVqBn5723w72WLcXU7YASSgmVxQxJJAJpump`): za mała płynność (3207 USD)
+- MAYA (`HqZZhbXWm17vnY29uj4cgczNUWo9o8VLUWsN4RH8pump`): za mała płynność (1756 USD)
+- THUG (`HoqJaoes6yfL8YEsHGfENwVKT7LrAPy97ZDg9hmBu4Ep`): za mała płynność (46221 USD)
+- DACITY (`5tBXkPVh716zSXHNZSr8i1PX7e6Uuj46JnBLdYchpump`): już zbyt mocno urosło (223% w godzinę)
