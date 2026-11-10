@@ -29,6 +29,21 @@
       "mode": "live",
       "pair_address": "FJk9sajdc2Q4heRPPu3yLzkmf2ZByZkpiHQLv9e2bn5A",
       "entry_tx": "28t99QDAhVWo44EpDNSaNo9pkGuvNGCA88X5QJh8LUizYRuHtSW6B8sA2xrtgwX7eiRJuezbWMB5rKeeQHhPb3oX"
+    },
+    {
+      "mint": "4kjruqGHDsSqkMdFfCjV7Vb62HPFhtXyWc2t6JpQzDnz",
+      "symbol": "GTA6",
+      "decimals": 9,
+      "amount_raw": "297917881830",
+      "entry_price_usd": 0.010069888996162644,
+      "entry_mark_price": 0.01003095880530348,
+      "cost_usd_remaining": 3.0,
+      "peak_price_usd": 0.010036013889579552,
+      "took_partial_tp": false,
+      "opened_at": "2026-11-10T21:25:53.954514+00:00",
+      "mode": "live",
+      "pair_address": "5AFbwVSQPJf4cgEjq4TajZYyPYUvYktrRN3SahNrPnmv",
+      "entry_tx": "45L4szbRiBPv58v8WgX1xdog9sM33SsfzVaK3js986UqFBpVYvHf8Xge3YxAdBZRfttVWgPbDdAFCVAWjJ7PS7Nf"
     }
   ],
   "cooldowns": {
@@ -42,5 +57,5 @@
     "live_realized_pnl_usd": -2.3807,
     "paper_realized_pnl_usd": 0.0
   },
-  "last_run_at": "2026-11-10T21:25:38.356516+00:00"
+  "last_run_at": "2026-11-10T21:30:05.201685+00:00"
 }
