@@ -1,0 +1,23 @@
+
+import requests
+import time
+
+DEX_URL = "https://api.dexscreener.com/token-profiles/latest/v1"
+
+def find_tokens():
+    try:
+        response = requests.get(DEX_URL, timeout=15)
+        response.raise_for_status()
+        tokens = response.json()
+
+        for token in tokens:
+            if token.get("chainId") == "solana":
+                print("Nowy token:", token.get("tokenAddress"))
+                print("Dex:", token.get("url"))
+
+    except Exception as error:
+        print("Błąd:", error)
+
+while True:
+    find_tokens()
+    time.sleep(60)
