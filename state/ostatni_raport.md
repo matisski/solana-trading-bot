@@ -22,11 +22,11 @@ DexScreener: 48 tokenów Solana, 44 odpadło na prostym filtrze.
 - brak
 
 ## Otwarte pozycje
-- GATO `HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump` — wejście 0.0082944172, teraz 0.0086113982 (+3.8%), wartość około 4.89 USDC, szczyt 0.0088682935
+- GATO `HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump` — wejście 0.0082944172, teraz 0.009443051 (+13.8%), wartość około 5.36 USDC, szczyt 0.009443051
 
 ## Pominięte tokeny
-- CBUCKS (`DtcicPCKTKeAh7TDEzTym3hXeoHAoMiBdYJhMYxZpump`): słaby ruch w górę (0.2% w godzinę)
-- OnlyCats (`BAftaSb1HVqBn5723w72WLcXU7YASSgmVxQxJJAJpump`): za mała płynność (3132 USD)
+- CBUCKS (`DtcicPCKTKeAh7TDEzTym3hXeoHAoMiBdYJhMYxZpump`): brak wzrostu w ostatniej godzinie (-6.3%)
+- OnlyCats (`BAftaSb1HVqBn5723w72WLcXU7YASSgmVxQxJJAJpump`): za mała płynność (3177 USD)
 - MAYA (`HqZZhbXWm17vnY29uj4cgczNUWo9o8VLUWsN4RH8pump`): za mała płynność (1697 USD)
-- THUG (`HoqJaoes6yfL8YEsHGfENwVKT7LrAPy97ZDg9hmBu4Ep`): za mała płynność (44912 USD)
-- forg (`2HhH7LwfNHrxqMrSoXZ6Ri7GdmRYSJ4e8qSra9Krpump`): za mała płynność (23729 USD)
+- THUG (`HoqJaoes6yfL8YEsHGfENwVKT7LrAPy97ZDg9hmBu4Ep`): za mała płynność (45816 USD)
+- forg (`2HhH7LwfNHrxqMrSoXZ6Ri7GdmRYSJ4e8qSra9Krpump`): za mała płynność (23388 USD)
