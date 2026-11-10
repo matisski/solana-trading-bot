@@ -20,7 +20,7 @@ permissions:
 jobs:
   trade:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 8
     steps:
       - name: Pobierz kod
         uses: actions/checkout@v4
@@ -38,6 +38,8 @@ jobs:
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
           RPC_URL: ${{ secrets.RPC_URL }}
           DRY_RUN: ${{ vars.DRY_RUN }}
+          # Publiczne repo: pętla około 4,5 min. Prywatne: jedno sprawdzenie.
+          LOOP_SECONDS: ${{ github.event.repository.private == false && '270' || '0' }}
         run: python -u main.py
 
       - name: Zapisz stan

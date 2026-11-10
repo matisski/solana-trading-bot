@@ -19,6 +19,7 @@ class Report:
         self.max_open = 3
         self.discovered = 0
         self.screened_out = 0
+        self.cycles = 1
         self.notes: list[str] = []
         self.warnings: list[str] = []
         self.buys: list[str] = []
@@ -67,6 +68,13 @@ class Report:
             f"(limit straty {self.loss_limit:.0f} USD)."
         )
         lines.append(f"**Otwarte pozycje:** {self.open_count} / {self.max_open}")
+        if self.cycles > 1:
+            lines.append(
+                f"**Sprawdzenia w tym uruchomieniu:** {self.cycles} "
+                "(ceny co około 30 sekund)."
+            )
+        else:
+            lines.append("**Sprawdzenia w tym uruchomieniu:** 1")
         lines.append("")
         lines.append(
             "GitHub często spóźnia uruchomienie co 5 minut. "
@@ -81,7 +89,7 @@ class Report:
 
         if self.notes:
             lines.append("## Ważne")
-            for note in self.notes:
+            for note in _unique(self.notes):
                 lines.append(f"- {note}")
             lines.append("")
 
@@ -103,10 +111,18 @@ class Report:
             lines.append("")
         if self.warnings:
             lines.append("## Ostrzeżenia")
-            for warning in self.warnings[:8]:
+            for warning in _unique(self.warnings)[:8]:
                 lines.append(f"- {warning}")
             lines.append("")
         return "\n".join(lines).rstrip() + "\n"
+
+
+def _unique(items: list[str]) -> list[str]:
+    seen: list[str] = []
+    for item in items:
+        if item not in seen:
+            seen.append(item)
+    return seen
 
 
 def _bullets(items: list[str]) -> list[str]:

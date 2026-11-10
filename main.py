@@ -1,4 +1,4 @@
-"""Start bota. Ustawienia są w desk.yaml. Jedno uruchomienie i koniec."""
+"""Start bota. Ustawienia są w desk.yaml. Jedno uruchomienie GitHuba, w nim kilka sprawdzeń."""
 
 from __future__ import annotations
 

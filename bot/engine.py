@@ -1,8 +1,9 @@
-"""One bot run: manage exits, then maybe buy. No infinite loop."""
+"""One GitHub run: exits first, then buys. May repeat for a few minutes."""
 
 from __future__ import annotations
 
 import os
+import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -30,6 +31,8 @@ REASON_PL = {
 }
 
 ROOT = Path(__file__).resolve().parent.parent
+CYCLE_INTERVAL_SECONDS = 30
+SCAN_EVERY_SECONDS = 90
 
 
 @dataclass
@@ -72,8 +75,6 @@ def run(root: Path | None = None) -> int:
     keypair = None
     rpc = None
     owner = ""
-    blocked_sol = False
-    usdc_raw = 0
 
     if mode == "live":
         try:
@@ -88,31 +89,132 @@ def run(root: Path | None = None) -> int:
         report.pubkey = owner
         rpc_url = os.environ.get("RPC_URL", "").strip() or cfg.rpc_fallback
         rpc = SolanaRpc(rpc_url, cfg.request_timeout_seconds)
+    else:
+        report.paper_reason = paper_reason()
+
+    loop_seconds = parse_loop_seconds(os.environ.get("LOOP_SECONDS"))
+    started = time.monotonic()
+    last_scan_at = -SCAN_EVERY_SECONDS
+    cycle_no = 0
+    # Hard cap so a clock mistake cannot spin. 4.5 min at 30 s is about 10 cycles.
+    while cycle_no < 20:
+        cycle_no += 1
+        report.cycles = cycle_no
+        now = datetime.now(timezone.utc)
+        try:
+            scanned = _one_cycle(
+                root=root,
+                cfg=cfg,
+                state=state,
+                mode=mode,
+                report=report,
+                secret=secret,
+                http_clients=(jupiter, dex, rugs),
+                rpc=rpc,
+                keypair=keypair,
+                owner=owner,
+                now=now,
+                cycle_no=cycle_no,
+                allow_scan=(time.monotonic() - last_scan_at) >= SCAN_EVERY_SECONDS,
+            )
+        except Exception as exc:
+            report.warnings.append(f"Sprawdzenie {cycle_no} przerwane ({type(exc).__name__}).")
+            _say(f"Sprawdzenie {cycle_no} nie doszło do końca: {type(exc).__name__}", secret)
+            scanned = False
+            state.data["last_run_at"] = now.isoformat()
+            state.save()
+            _write_report_file(root, report, secret)
+        if scanned:
+            last_scan_at = time.monotonic()
+        pause = seconds_until_next_cycle(
+            loop_seconds, started, time.monotonic(), CYCLE_INTERVAL_SECONDS
+        )
+        if pause is None:
+            break
+        _say(f"Następne sprawdzenie cen za {int(pause)} s.", secret)
+        time.sleep(pause)
+    _finish(root, state, report, secret, datetime.now(timezone.utc))
+    return 0
+
+
+def parse_loop_seconds(raw: str | None) -> int:
+    """0 means one cycle. Anything else is how long the whole run may last."""
+    text = (raw or "").strip()
+    if not text:
+        return 0
+    try:
+        value = int(text)
+    except ValueError:
+        return 0
+    return value if value > 0 else 0
+
+
+def seconds_until_next_cycle(loop_seconds: int, started: float, now: float, interval: int) -> float | None:
+    """Sleep until the next 30 s mark. None means this run should stop."""
+    if loop_seconds <= 0 or interval <= 0:
+        return None
+    elapsed = now - started
+    if elapsed >= loop_seconds:
+        return None
+    next_start = (int(elapsed // interval) + 1) * interval
+    if next_start >= loop_seconds:
+        return None
+    return max(0.0, started + next_start - now)
+
+
+def _one_cycle(
+    root,
+    cfg,
+    state,
+    mode,
+    report,
+    secret,
+    http_clients,
+    rpc,
+    keypair,
+    owner,
+    now,
+    cycle_no,
+    allow_scan,
+) -> bool:
+    """Exits first, then at most one buy. Returns True when a buy scan ran."""
+    jupiter, dex, rugs = http_clients
+    state.roll_day(now.strftime("%Y-%m-%d"))
+    state.prune_cooldowns(now, cfg.cooldown_minutes)
+    report.day = now.strftime("%Y-%m-%d")
+    report.positions.clear()
+
+    blocked_sol = False
+    usdc_raw = 0
+    wallet_unreadable = False
+    if mode == "live" and rpc is not None:
         try:
             sol = rpc.sol_balance(owner)
             usdc_raw = rpc.token_raw(owner, cfg.usdc_mint)
         except RpcError as exc:
+            wallet_unreadable = True
             report.notes.append(
-                "Nie udało się odczytać portfela, więc nic nie sprzedaję i nic nie kupuję. "
-                f"Szczegół: {exc}"
+                "Nie udało się odczytać portfela, więc w tym sprawdzeniu nic nie sprzedaję "
+                f"i nic nie kupuję. Szczegół: {exc}"
             )
-            report.realized = state.realized(mode)
-            report.open_count = len(state.positions_for(mode))
-            _finish(root, state, report, secret, now)
-            return 0
-        report.sol = sol
-        report.usdc = usdc_raw / (10**cfg.usdc_decimals)
-        if sol < cfg.sol_fee_reserve:
-            blocked_sol = True
-            report.notes.append(
-                f"Za mało SOL na opłaty sieci. Jest {sol:.4f} SOL, a minimum to "
-                f"{cfg.sol_fee_reserve:.4f} SOL. Wpłać około 0.02–0.03 SOL na portfel bota. "
-                "Bot nie wysyła transakcji, dopóki SOL nie wróci powyżej minimum."
-            )
-    else:
-        report.paper_reason = paper_reason()
+        else:
+            report.sol = sol
+            report.usdc = usdc_raw / (10**cfg.usdc_decimals)
+            if sol < cfg.sol_fee_reserve:
+                blocked_sol = True
+                report.notes.append(
+                    f"Za mało SOL na opłaty sieci. Jest {sol:.4f} SOL, a minimum to "
+                    f"{cfg.sol_fee_reserve:.4f} SOL. Wpłać około 0.02–0.03 SOL na portfel bota. "
+                    "Bot nie wysyła transakcji, dopóki SOL nie wróci powyżej minimum."
+                )
 
-    _say("Pilnuję otwartych pozycji...", secret)
+    if wallet_unreadable:
+        state.data["last_run_at"] = now.isoformat()
+        state.save()
+        _write_report_file(root, report, secret)
+        return False
+
+    _say(f"Sprawdzenie {cycle_no}: pilnuję otwartych pozycji...", secret)
     for pos in list(state.positions_for(mode)):
         try:
             _manage_position(
@@ -143,7 +245,9 @@ def run(root: Path | None = None) -> int:
     if slots <= 0 and not loss_hit and not blocked_sol:
         report.notes.append("Jest już maksymalna liczba otwartych pozycji. Nowych nie kupuję.")
 
-    if can_buy:
+    scanned = False
+    if can_buy and allow_scan:
+        scanned = True
         _say("Szukam tokenów...", secret)
         try:
             _look_for_buys(
@@ -151,14 +255,18 @@ def run(root: Path | None = None) -> int:
             )
         except Exception as exc:
             report.warnings.append(f"Skan przerwany ({type(exc).__name__}).")
+    elif can_buy:
+        _say("Tym razem tylko ceny otwartych pozycji. Nowe szukanie za chwilę.", secret)
 
     report.realized = state.realized(mode)
     report.open_count = len(state.positions_for(mode))
     if not report.positions:
         for pos in state.positions_for(mode):
             _remember_position(report, pos, float(pos.get("peak_price_usd") or pos.get("entry_price_usd") or 0))
-    _finish(root, state, report, secret, now)
-    return 0
+    state.data["last_run_at"] = now.isoformat()
+    state.save()
+    _write_report_file(root, report, secret)
+    return scanned
 
 
 def _manage_position(pos, cfg, state, mode, jupiter, rpc, keypair, owner, blocked_sol, report, now):
@@ -385,6 +493,7 @@ def _settle_pending(pos, cfg, state, rpc, report, now) -> str:
 
 
 def _look_for_buys(cfg, state, mode, dex, rugs, jupiter, rpc, keypair, owner, report, now):
+    report.skips.clear()
     mints, warnings = dex.trending_mints()
     report.warnings.extend(warnings)
     report.discovered = len(mints)
@@ -585,14 +694,19 @@ def _remember_position(report: Report, pos: dict, price: float) -> None:
     )
 
 
-def _finish(root: Path, state: State, report: Report, secret: str, now: datetime) -> None:
-    state.data["last_run_at"] = now.isoformat()
-    state.save()
+def _write_report_file(root: Path, report: Report, secret: str) -> str:
     text = redact(report.render(), secret)
-    _say(text, secret)
     report_path = root / "state" / "ostatni_raport.md"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(text, encoding="utf-8")
+    return text
+
+
+def _finish(root: Path, state: State, report: Report, secret: str, now: datetime) -> None:
+    state.data["last_run_at"] = now.isoformat()
+    state.save()
+    text = _write_report_file(root, report, secret)
+    _say(text, secret)
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
         with open(summary, "a", encoding="utf-8") as handle:

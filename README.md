@@ -61,7 +61,13 @@ Potem:
 3. Stuknij **Run workflow**, a potem zielony przycisk.
 4. Odśwież po minucie i otwórz to uruchomienie. Na górze jest podsumowanie.
 
-Bot sam startuje mniej więcej co 5 minut. GitHub często spóźnia ten zegar. Czasem minie 10, 20 albo więcej minut. Stop-loss nie jest natychmiastowy. Cena może zdążyć spaść mocniej, zanim bot się obudzi.
+Bot sam startuje mniej więcej co 5 minut. GitHub często spóźnia ten zegar. Czasem minie 10, 20 albo więcej minut.
+
+Gdy projekt jest publiczny, jedno uruchomienie trwa około 4,5 minuty. W tym czasie bot sprawdza ceny otwartych pozycji co około 30 sekund. Nowych tokenów szuka najwyżej co półtorej minuty, żeby nie zatykać darmowych limitów stron. Potem się wyłącza, żeby nie zderzyć się z następnym uruchomieniem. Limity (3 pozycje, 10 USD straty na dzień, jedno nowe kupno na szukanie) liczą się przez cały ten czas.
+
+Ten projekt jest teraz prywatny. Wtedy bot sprawdza ceny tylko raz na uruchomienie. Pętla co 30 sekund na prywatnym repozytorium zjadłaby darmowe minuty GitHuba w około półtora dnia. Gdy projekt stanie się publiczny, częstsze sprawdzanie włączy się samo.
+
+Stop-loss nie jest natychmiastowy. Między sprawdzeniami mija około 30 sekund, a sam GitHub potrafi obudzić bota dużo później.
 
 ## 5. Jak czytać wyniki
 
@@ -111,7 +117,7 @@ Są w pliku `desk.yaml`. Domyślnie:
 
 - jedno kupno: **5 USDC**
 - najwyżej **3** otwarte pozycje
-- na jedno uruchomienie najwyżej **1** nowe kupno, żeby nie wydać całych 15 USDC naraz
+- na jedno szukanie najwyżej **1** nowe kupno, żeby nie wydać całych 15 USDC naraz. Przy pełnej pętli szukanie jest około co 90 sekund, nie co 30
 - dzienny limit straty: **10 USD** (liczy się zrealizowana strata, dzień od północy UTC). Po limicie bot nie kupuje do następnego dnia, ale dalej pilnuje otwartych pozycji
 - przy **2x** sprzedaje połowę
 - twardy stop: **−8%** od ceny kupna

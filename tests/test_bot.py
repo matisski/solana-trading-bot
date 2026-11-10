@@ -10,6 +10,7 @@ from pathlib import Path
 import yaml
 
 from bot.config import USDC_MINT, ConfigError, load_config, trading_mode
+from bot.engine import parse_loop_seconds, seconds_until_next_cycle
 from bot.logic import decide_exit, impact_percent, sell_raw_amount, split_cost
 from bot.report import redact
 from bot.safety import evaluate_report
@@ -244,9 +245,35 @@ class RepoTests(unittest.TestCase):
         self.assertIn("SOLANA_PRIVATE_KEY", text)
         self.assertIn("DRY_RUN", text)
         self.assertIn("RPC_URL", text)
+        self.assertIn("LOOP_SECONDS", text)
+        self.assertIn("github.event.repository.private == false && '270' || '0'", text)
+        self.assertIn("timeout-minutes: 8", text)
         self.assertNotIn("\n  run: |", text)
         self.assertNotIn("while True", (ROOT / "main.py").read_text(encoding="utf-8"))
         self.assertNotIn("while True", (ROOT / "bot" / "engine.py").read_text(encoding="utf-8"))
+
+
+class LoopTests(unittest.TestCase):
+    def test_missing_or_zero_is_a_single_pass(self):
+        self.assertEqual(parse_loop_seconds(None), 0)
+        self.assertEqual(parse_loop_seconds(""), 0)
+        self.assertEqual(parse_loop_seconds("0"), 0)
+        self.assertEqual(parse_loop_seconds("nope"), 0)
+        self.assertIsNone(seconds_until_next_cycle(0, 0.0, 1.0, 30))
+
+    def test_public_window_checks_every_30s_and_stops_before_five_minutes(self):
+        starts = [0.0]
+        now = 0.0
+        while len(starts) < 20:
+            pause = seconds_until_next_cycle(270, 0.0, now, 30)
+            if pause is None:
+                break
+            now += pause
+            starts.append(now)
+        self.assertEqual(starts, [0, 30, 60, 90, 120, 150, 180, 210, 240])
+        self.assertLess(starts[-1] + 30, 300)
+        scan_times = [t for t in starts if t % 90 == 0]
+        self.assertEqual(scan_times, [0, 90, 180])
 
 
 if __name__ == "__main__":
