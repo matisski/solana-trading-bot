@@ -10,17 +10,17 @@ Portfel na Solscan: https://solscan.io/account/J6MKXaZmbpRXkSfiNBGTm52R7ffQacH1m
 **Dzień UTC:** 2026-11-10
 **Zrealizowany wynik dzisiaj:** -2.38 USDC (limit straty 10 USD).
 **Otwarte pozycje:** 2 / 3
-**Sprawdzenia w tym uruchomieniu:** 5 (ceny co około 30 sekund).
+**Sprawdzenia w tym uruchomieniu:** 7 (ceny co około 30 sekund).
 
 GitHub często spóźnia uruchomienie co 5 minut. Stop nie zadziała w tej samej sekundzie, w której cena spadnie.
-Kandydaci: 394 unikalnych adresów Solana, 388 odpadło na prostym filtrze.
+Kandydaci: 286 unikalnych adresów Solana, 280 odpadło na prostym filtrze.
 - DexScreener boosty top: 23
 - DexScreener boosty najnowsze: 3
 - DexScreener profile: 22
-- DexScreener szukaj: 158
+- DexScreener szukaj: 159
 - GeckoTerminal popularne: 13
-- GeckoTerminal wolumen: 120
-- GeckoTerminal nowe pule: 55
+- GeckoTerminal wolumen: 66
+- GeckoTerminal nowe pule: 0
 
 ## Sprzedaże
 - brak
@@ -29,15 +29,15 @@ Kandydaci: 394 unikalnych adresów Solana, 388 odpadło na prostym filtrze.
 - brak
 
 ## Otwarte pozycje
-- GATO `HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump` — wejście 0.0082944172, teraz 0.0092791455 (+11.9%), wartość około 5.27 USDC, szczyt 0.010328892
-- FLOAT `Bv1a7cEj5aRnJQhMw4kRQqAFesMSd5LwcDnUzq52BMmr` — wejście 0.01020079, teraz 0.0098681113 (-3.3%), wartość około 2.90 USDC, szczyt 0.010805278
+- GATO `HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump` — wejście 0.0082944172, teraz 0.0093044813 (+12.2%), wartość około 5.28 USDC, szczyt 0.010328892
+- FLOAT `Bv1a7cEj5aRnJQhMw4kRQqAFesMSd5LwcDnUzq52BMmr` — wejście 0.01020079, teraz 0.010113389 (-0.9%), wartość około 2.97 USDC, szczyt 0.010805278
 
 ## Pominięte tokeny
 - cbBTC (`cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij`): za wysokie ryzyko RugCheck (76, limit 30)
-- CBUCKS (`DtcicPCKTKeAh7TDEzTym3hXeoHAoMiBdYJhMYxZpump`): za mały obrót godzinowy (7895 USD)
+- CBUCKS (`DtcicPCKTKeAh7TDEzTym3hXeoHAoMiBdYJhMYxZpump`): za mały obrót godzinowy (8204 USD)
 - OnlyCats (`BAftaSb1HVqBn5723w72WLcXU7YASSgmVxQxJJAJpump`): za mała płynność (3176 USD)
 - DACITY (`5tBXkPVh716zSXHNZSr8i1PX7e6Uuj46JnBLdYchpump`): obrót nie przyspiesza
-- forg (`2HhH7LwfNHrxqMrSoXZ6Ri7GdmRYSJ4e8qSra9Krpump`): za mała płynność (22621 USD)
+- forg (`2HhH7LwfNHrxqMrSoXZ6Ri7GdmRYSJ4e8qSra9Krpump`): za mała płynność (22567 USD)
 - MUBBO (`JBUe4NZu4rm4Ej5AsLZECZLHvnWpFRmhn9oPLXCVpump`): za mała płynność (2150 USD)
 
 ## Ostrzeżenia
