@@ -93,17 +93,17 @@ def paper_reason(environ: dict[str, str] | None = None) -> str:
 _DEFAULTS = {
     "platnosc": {"mint": USDC_MINT, "decimals": 6},
     "pozycja": {
-        "wielkosc_usd": 5.0,
+        "wielkosc_usd": 3.0,
         "max_otwartych": 3,
         "max_nowych_na_uruchomienie": 1,
         "limit_straty_dziennej_usd": 10.0,
         "pauza_po_sprzedazy_minuty": 360,
     },
     "wyjscia": {
-        "take_profit_razy": 2.0,
+        "take_profit_razy": 1.3,
         "take_profit_sprzedaj_czesc": 0.5,
         "stop_loss_procent": 8.0,
-        "trailing_stop_procent": 10.0,
+        "trailing_stop_procent": 12.0,
     },
     "oplaty": {"rezerwa_sol": 0.005, "max_priority_fee_lamports": 200_000},
     "filtry": {
@@ -112,7 +112,7 @@ _DEFAULTS = {
         "min_obrot_h1_usd": 30_000,
         "max_stosunek_sprzedaz_kupno_h1": 1.5,
         "min_kupna_h1": 25,
-        "min_zmiana_h1_procent": 5,
+        "min_zmiana_h1_procent": 0,
         "max_zmiana_h1_procent": 100,
         "max_spadek_m5_procent": 5,
         "max_stosunek_sprzedaz_kupno_m5": 1.8,

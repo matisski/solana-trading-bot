@@ -73,19 +73,30 @@ def screen_pair(pair: dict, cfg: Config, now_ms: int) -> str | None:
         change_pct = float(change)
     except (TypeError, ValueError):
         return "brak zmiany ceny"
-    if change_pct < cfg.min_price_change_h1_pct:
-        return f"słaby ruch w górę ({change_pct:.1f}% w godzinę)"
+    if change_pct <= cfg.min_price_change_h1_pct:
+        return f"brak wzrostu w ostatniej godzinie ({change_pct:.1f}%)"
     if change_pct > cfg.max_price_change_h1_pct:
         return f"już zbyt mocno urosło ({change_pct:.0f}% w godzinę)"
 
+    try:
+        volume_m5 = float((pair.get("volume") or {}).get("m5") or 0)
+    except (TypeError, ValueError):
+        volume_m5 = 0.0
+    # Last 5 minutes at least as fast as the hour average: volume is still rising.
+    if volume_m5 * 12 < volume:
+        return "obrót nie przyspiesza"
+
     minute = (pair.get("priceChange") or {}).get("m5")
-    if minute is not None:
-        try:
-            minute_pct = float(minute)
-        except (TypeError, ValueError):
-            minute_pct = None
-        if minute_pct is not None and minute_pct <= -cfg.max_m5_drop_pct:
-            return f"spadek w ostatnich 5 minutach ({minute_pct:.1f}%)"
+    if minute is None:
+        return "brak ruchu z ostatnich 5 minut"
+    try:
+        minute_pct = float(minute)
+    except (TypeError, ValueError):
+        return "brak ruchu z ostatnich 5 minut"
+    if minute_pct <= -cfg.max_m5_drop_pct:
+        return f"spadek w ostatnich 5 minutach ({minute_pct:.1f}%)"
+    if minute_pct <= 0:
+        return f"brak wzrostu w ostatnich 5 minutach ({minute_pct:.1f}%)"
 
     recent = (pair.get("txns") or {}).get("m5") or {}
     try:

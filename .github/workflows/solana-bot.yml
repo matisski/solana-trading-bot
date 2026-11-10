@@ -16,6 +16,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   trade:
@@ -38,6 +39,7 @@ jobs:
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
           RPC_URL: ${{ secrets.RPC_URL }}
           DRY_RUN: ${{ vars.DRY_RUN }}
+          BOT_ENABLED: ${{ vars.BOT_ENABLED }}
           # Publiczne repo: pętla około 4,5 min. Prywatne: jedno sprawdzenie.
           LOOP_SECONDS: ${{ github.event.repository.private == false && '270' || '0' }}
         run: python -u main.py
@@ -73,3 +75,9 @@ jobs:
           done
           echo "Nie udało się zapisać stanu."
           exit 1
+
+      - name: Następne uruchomienie
+        if: always() && vars.BOT_ENABLED != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run solana-bot.yml --ref main

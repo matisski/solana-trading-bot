@@ -13,17 +13,17 @@ platnosc:
   decimals: 6
 
 pozycja:
-  wielkosc_usd: 5.0                 # jedno kupno = 5 USDC
+  wielkosc_usd: 3.0                 # jedno kupno = 3 USDC
   max_otwartych: 3                  # najwyżej 3 tokeny naraz
   max_nowych_na_uruchomienie: 1     # na jedno uruchomienie najwyżej 1 nowe kupno
   limit_straty_dziennej_usd: 10.0   # po tej stracie (UTC) nie ma nowych kupien do jutra
   pauza_po_sprzedazy_minuty: 360    # nie kupuj tego samego tokenu przez 6 godzin
 
 wyjscia:
-  take_profit_razy: 2.0             # przy 2x sprzedaj część
+  take_profit_razy: 1.3             # przy +30% sprzedaj połowę
   take_profit_sprzedaj_czesc: 0.5   # połowa pozycji
-  stop_loss_procent: 8.0            # sprzedaj wszystko przy -8% od ceny kupna
-  trailing_stop_procent: 10.0       # sprzedaj, gdy cena spadnie 10% od szczytu
+  stop_loss_procent: 8.0            # sprzedaj wszystko przy -8% od ceny tuż po kupnie
+  trailing_stop_procent: 12.0       # resztę sprzedaj 12% poniżej szczytu, gdy już jest zysk
 
 oplaty:
   rezerwa_sol: 0.005                # poniżej tej ilości SOL bot nic nie wysyła
@@ -35,7 +35,7 @@ filtry:
   min_obrot_h1_usd: 30000
   max_stosunek_sprzedaz_kupno_h1: 1.5
   min_kupna_h1: 25
-  min_zmiana_h1_procent: 5          # w ostatniej godzinie cena ma iść w górę
+  min_zmiana_h1_procent: 0          # cena w ostatniej godzinie ma być na plusie (dopiero startuje)
   max_zmiana_h1_procent: 100        # pomiń token, który już mocno wystrzelił
   max_spadek_m5_procent: 5          # nie kupuj, gdy ostatnie 5 minut to już zjazd
   max_stosunek_sprzedaz_kupno_m5: 1.8

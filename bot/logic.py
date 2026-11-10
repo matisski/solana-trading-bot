@@ -38,7 +38,8 @@ def decide_exit(
     if not took_partial and price >= entry * take_profit_multiple:
         fraction = 1.0 if take_profit_sell_fraction >= 0.999 else take_profit_sell_fraction
         return ExitDecision("sell", fraction, "take_profit")
-    if peak > entry and price <= peak * (1 - trailing_stop_pct / 100):
+    # Trail only the half that is left after the first take-profit.
+    if took_partial and peak > entry and price <= peak * (1 - trailing_stop_pct / 100):
         return ExitDecision("sell", 1.0, "trailing_stop")
     return ExitDecision("hold", 0.0, "")
 

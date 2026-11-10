@@ -53,9 +53,18 @@ class Candidate:
     entry_mark_price: float
 
 
+def bot_enabled(environ: dict[str, str] | None = None) -> bool:
+    """False only when the repo variable BOT_ENABLED is exactly false."""
+    env = os.environ if environ is None else environ
+    return str(env.get("BOT_ENABLED", "")).strip().lower() != "false"
+
+
 def run(root: Path | None = None) -> int:
     root = root or ROOT
     secret = os.environ.get("SOLANA_PRIVATE_KEY", "")
+    if not bot_enabled():
+        _say("Bot jest wyłączony (BOT_ENABLED=false). Nic nie kupuję i nie sprzedaję.", secret)
+        return 0
     try:
         cfg = load_config(root / "desk.yaml")
         state = State.load(root / "state" / "state.json")

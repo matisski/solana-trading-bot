@@ -10,7 +10,7 @@ from pathlib import Path
 import yaml
 
 from bot.config import USDC_MINT, ConfigError, load_config, trading_mode
-from bot.engine import parse_loop_seconds, seconds_until_next_cycle
+from bot.engine import bot_enabled, parse_loop_seconds, seconds_until_next_cycle
 from bot.reconcile import estimate_entry, is_meaningful, split_conflict, union_csv, union_state
 from bot.logic import decide_exit, impact_percent, sell_raw_amount, split_cost
 from bot.report import redact
@@ -74,8 +74,9 @@ class ExitTests(unittest.TestCase):
     def test_no_second_partial(self):
         self.assertEqual(self.decide(1.0, 2.2, 2.1, took_partial=True).action, "hold")
 
-    def test_trailing_after_peak(self):
-        decision = self.decide(1.0, 1.5, 1.35)
+    def test_trailing_only_after_half_is_sold(self):
+        self.assertEqual(self.decide(1.0, 1.2, 1.05).action, "hold")
+        decision = self.decide(1.0, 1.2, 1.05, took_partial=True)
         self.assertEqual(decision.reason, "trailing_stop")
 
     def test_trail_not_armed_at_entry(self):
@@ -114,6 +115,18 @@ class SafetyTests(unittest.TestCase):
         pair["priceChange"]["m5"] = -12
         self.assertIn("5 minutach", screen_pair(pair, CFG, now_ms))
 
+    def test_flat_five_minutes_is_skipped(self):
+        now_ms = 1_000_000_000_000
+        pair = self._pair(created=now_ms - 120 * 60_000, change=8)
+        pair["priceChange"]["m5"] = 0
+        self.assertIn("5 minutach", screen_pair(pair, CFG, now_ms))
+
+    def test_fading_volume_is_skipped(self):
+        now_ms = 1_000_000_000_000
+        pair = self._pair(created=now_ms - 120 * 60_000, change=8)
+        pair["volume"]["m5"] = 100
+        self.assertIn("nie przyspiesza", screen_pair(pair, CFG, now_ms))
+
     def test_clean_report_passes(self):
         self.assertIsNone(evaluate_report(self._report(), CFG))
 
@@ -150,9 +163,9 @@ class SafetyTests(unittest.TestCase):
             "quoteToken": {"address": USDC_MINT},
             "liquidity": {"usd": 50_000},
             "pairCreatedAt": created,
-            "txns": {"h1": {"buys": buys, "sells": sells}},
-            "volume": {"h1": 40_000},
-            "priceChange": {"h1": change},
+            "txns": {"h1": {"buys": buys, "sells": sells}, "m5": {"buys": 20, "sells": 10}},
+            "volume": {"h1": 40_000, "m5": 4_000},
+            "priceChange": {"h1": change, "m5": 2},
         }
 
     def _report(self):
@@ -223,14 +236,14 @@ class StateTests(unittest.TestCase):
 class RepoTests(unittest.TestCase):
     def test_defaults(self):
         self.assertEqual(CFG.usdc_mint, USDC_MINT)
-        self.assertEqual(CFG.position_size_usd, 5)
-        self.assertEqual(CFG.position_size_raw, 5_000_000)
+        self.assertEqual(CFG.position_size_usd, 3)
+        self.assertEqual(CFG.position_size_raw, 3_000_000)
         self.assertEqual(CFG.max_open_positions, 3)
         self.assertEqual(CFG.daily_loss_limit_usd, 10)
-        self.assertEqual(CFG.take_profit_multiple, 2)
+        self.assertEqual(CFG.take_profit_multiple, 1.3)
         self.assertEqual(CFG.take_profit_sell_fraction, 0.5)
         self.assertEqual(CFG.stop_loss_pct, 8)
-        self.assertEqual(CFG.trailing_stop_pct, 10)
+        self.assertEqual(CFG.trailing_stop_pct, 12)
         self.assertEqual(CFG.min_pair_age_minutes, 45)
         self.assertEqual(CFG.min_liquidity_usd, 50_000)
         self.assertEqual(CFG.min_volume_h1_usd, 30_000)
@@ -269,6 +282,10 @@ class RepoTests(unittest.TestCase):
         self.assertIn("timeout-minutes: 8", text)
         self.assertIn("git pull --rebase", text)
         self.assertIn("bot.merge_state", text)
+        self.assertEqual(data["permissions"]["actions"], "write")
+        self.assertIn("gh workflow run solana-bot.yml --ref main", text)
+        self.assertIn("BOT_ENABLED", text)
+        self.assertIn("vars.BOT_ENABLED != 'false'", text)
         self.assertNotIn("\n  run: |", text)
         self.assertNotIn("while True", (ROOT / "main.py").read_text(encoding="utf-8"))
         self.assertNotIn("while True", (ROOT / "bot" / "engine.py").read_text(encoding="utf-8"))
@@ -325,6 +342,11 @@ class ReconcileTests(unittest.TestCase):
 
 
 class LoopTests(unittest.TestCase):
+    def test_kill_switch_is_only_explicit_false(self):
+        self.assertTrue(bot_enabled({}))
+        self.assertTrue(bot_enabled({"BOT_ENABLED": "true"}))
+        self.assertFalse(bot_enabled({"BOT_ENABLED": "false"}))
+
     def test_missing_or_zero_is_a_single_pass(self):
         self.assertEqual(parse_loop_seconds(None), 0)
         self.assertEqual(parse_loop_seconds(""), 0)
