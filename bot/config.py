@@ -108,7 +108,7 @@ _DEFAULTS = {
     "oplaty": {"rezerwa_sol": 0.005, "max_priority_fee_lamports": 200_000},
     "filtry": {
         "min_wiek_pary_minuty": 45,
-        "min_plynnosc_usd": 50_000,
+        "min_plynnosc_usd": 30_000,
         "min_obrot_h1_usd": 30_000,
         "max_stosunek_sprzedaz_kupno_h1": 1.5,
         "min_kupna_h1": 25,

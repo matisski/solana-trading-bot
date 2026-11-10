@@ -4,6 +4,7 @@
 # Odświeżenie rejestracji cron w GitHubie. Zegar zostaje bez zmian.
 # Ponowna rejestracja zapasowego zegara co 5 minut. Sam łańcuch uruchomień się nie zmienia.
 # Ręczne wznowienie łańcucha. Zasady handlu bez zmian.
+# Próg płynności jest w desk.yaml. Ten komentarz tylko kolejkuje nowe uruchomienie.
 
 name: Solana Memecoin Bot
 

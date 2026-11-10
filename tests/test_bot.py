@@ -245,7 +245,7 @@ class RepoTests(unittest.TestCase):
         self.assertEqual(CFG.stop_loss_pct, 8)
         self.assertEqual(CFG.trailing_stop_pct, 12)
         self.assertEqual(CFG.min_pair_age_minutes, 45)
-        self.assertEqual(CFG.min_liquidity_usd, 50_000)
+        self.assertEqual(CFG.min_liquidity_usd, 30_000)
         self.assertEqual(CFG.min_volume_h1_usd, 30_000)
         self.assertEqual(CFG.max_price_impact_pct, 1.5)
         self.assertEqual(CFG.min_roundtrip_pct, 97)

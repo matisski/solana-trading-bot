@@ -31,7 +31,7 @@ oplaty:
 
 filtry:
   min_wiek_pary_minuty: 45          # nie kupuj tokenu młodszego niż 45 minut
-  min_plynnosc_usd: 50000           # cienkie pule pump.fun potrafią spaść kilkanaście procent naraz
+  min_plynnosc_usd: 30000           # dotyczy zwykłych wejść i wczesnego wzrostu
   min_obrot_h1_usd: 30000
   max_stosunek_sprzedaz_kupno_h1: 1.5
   min_kupna_h1: 25

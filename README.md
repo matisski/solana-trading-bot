@@ -105,7 +105,7 @@ Jak zatrzymać bota: dodaj zmienną `BOT_ENABLED` i ustaw ją na `false` (to sam
 ## 7. Co bot odrzuca
 
 - token młodszy niż 45 minut,
-- płynność poniżej 50 000 USD albo mały obrót,
+- płynność poniżej 30 000 USD albo mały obrót,
 - token, który w ostatniej godzinie nie rośnie, w ostatnich 5 minutach nie rośnie, albo obrót zwalnia,
 - token, który w ostatniej godzinie urósł już o ponad 100%,
 - dużo więcej sprzedaży niż kupna,
@@ -128,7 +128,7 @@ Są w pliku `desk.yaml`. Domyślnie:
 - resztę po tej połowie sprzedaje trailing stop: **12%** poniżej najwyższej ceny
 - kupuje token, który dopiero zaczyna rosnąć: plus w ostatnich 5 minutach i w ostatniej godzinie, obrót przyspiesza, ale godzina nie jest już powyżej 100%
 - minimalny wiek pary: **45 minut**
-- minimalna płynność: **50 000 USD**, minimalny obrót godzinowy: **30 000 USD**
+- minimalna płynność: **30 000 USD** (także przy wczesnym wejściu), minimalny obrót godzinowy: **30 000 USD**
 - poślizg: **3%**
 - maksymalny wpływ na cenę przy kupnie i przy sprzedaży: **1,5%**
 - test sprzedaży przed kupnem musi oddać co najmniej **97%** USDC
