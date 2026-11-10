@@ -31,4 +31,3 @@ def find_tokens():
 
 while True:
     find_tokens()
-    time.sleep(config["scan_interval_seconds"])
