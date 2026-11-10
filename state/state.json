@@ -1,61 +1,18 @@
 {
-  "positions": [
-    {
-      "mint": "HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump",
-      "symbol": "GATO",
-      "decimals": 6,
-      "amount_raw": "567815105",
-      "entry_price_usd": 0.008294417240921658,
-      "entry_mark_price": 0.0082450422339699,
-      "cost_usd_remaining": 4.709695,
-      "peak_price_usd": 0.010328892184014723,
-      "took_partial_tp": false,
-      "opened_at": "2026-11-10T19:10:20.715383+00:00",
-      "mode": "live",
-      "pair_address": "5E3dXLXGwmTDCokA51WYYaKttjFZBwqCoyUHBUi5gt2m",
-      "entry_tx": "5w3JAzijjfTmoxztpt5p2LezLpTuegwp2WkMC8xTnHH3KVHShRzNT8nvHdWhaLpbQkrzR56AYfs8bJyeP9SKfpSJ"
-    },
-    {
-      "mint": "Bv1a7cEj5aRnJQhMw4kRQqAFesMSd5LwcDnUzq52BMmr",
-      "symbol": "FLOAT",
-      "decimals": 6,
-      "amount_raw": "293749219",
-      "entry_price_usd": 0.010200789934891452,
-      "entry_mark_price": 0.010173326008123412,
-      "cost_usd_remaining": 2.996474,
-      "peak_price_usd": 0.010805278089947875,
-      "took_partial_tp": false,
-      "opened_at": "2026-11-10T20:45:31.502736+00:00",
-      "mode": "live",
-      "pair_address": "FJk9sajdc2Q4heRPPu3yLzkmf2ZByZkpiHQLv9e2bn5A",
-      "entry_tx": "28t99QDAhVWo44EpDNSaNo9pkGuvNGCA88X5QJh8LUizYRuHtSW6B8sA2xrtgwX7eiRJuezbWMB5rKeeQHhPb3oX"
-    },
-    {
-      "mint": "4kjruqGHDsSqkMdFfCjV7Vb62HPFhtXyWc2t6JpQzDnz",
-      "symbol": "GTA6",
-      "decimals": 9,
-      "amount_raw": "297917881830",
-      "entry_price_usd": 0.010069888996162644,
-      "entry_mark_price": 0.01003095880530348,
-      "cost_usd_remaining": 3.0,
-      "peak_price_usd": 0.010135678937604241,
-      "took_partial_tp": false,
-      "opened_at": "2026-11-10T21:25:53.954514+00:00",
-      "mode": "live",
-      "pair_address": "5AFbwVSQPJf4cgEjq4TajZYyPYUvYktrRN3SahNrPnmv",
-      "entry_tx": "45L4szbRiBPv58v8WgX1xdog9sM33SsfzVaK3js986UqFBpVYvHf8Xge3YxAdBZRfttVWgPbDdAFCVAWjJ7PS7Nf"
-    }
-  ],
+  "positions": [],
   "cooldowns": {
     "EJv8TgQfN6gtYN8Z6KGyBeNPbVYmogmudfxiRA2Fpump": "2026-11-10T18:36:24.356157+00:00",
     "66KbLTkLpPBPdhkRZs8XZk7Yw1DwuV3KYHKNTvmbpump": "2026-11-10T18:47:43.149270+00:00",
     "Ho7iohoM6UN96yoxzBNzz9aXZpNW3AyUVuEmBdAQpump": "2026-11-10T18:49:45.063858+00:00",
-    "BWJfBNeXpapG7uoqByp5KSwWgCQba8QcDmA2DQiEpump": "2026-11-10T19:36:58.771805+00:00"
+    "BWJfBNeXpapG7uoqByp5KSwWgCQba8QcDmA2DQiEpump": "2026-11-10T19:36:58.771805+00:00",
+    "HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump": "2026-11-10T21:53:08.092636+00:00",
+    "4kjruqGHDsSqkMdFfCjV7Vb62HPFhtXyWc2t6JpQzDnz": "2026-11-10T21:53:08.092636+00:00",
+    "Bv1a7cEj5aRnJQhMw4kRQqAFesMSd5LwcDnUzq52BMmr": "2026-11-10T21:53:08.092636+00:00"
   },
   "daily": {
     "date_utc": "2026-11-10",
     "live_realized_pnl_usd": -2.3807,
     "paper_realized_pnl_usd": 0.0
   },
-  "last_run_at": "2026-11-10T21:52:15.783617+00:00"
+  "last_run_at": "2026-11-10T21:56:38.498771+00:00"
 }
