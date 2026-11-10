@@ -1,1 +1,4 @@
 requests>=2.32,<3
+PyYAML>=6,<7
+solders>=0.21,<1
+base58>=2.1,<3

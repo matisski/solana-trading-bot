@@ -1,0 +1,10 @@
+{
+  "positions": [],
+  "cooldowns": {},
+  "daily": {
+    "date_utc": "",
+    "live_realized_pnl_usd": 0.0,
+    "paper_realized_pnl_usd": 0.0
+  },
+  "last_run_at": null
+}
