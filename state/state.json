@@ -13,30 +13,17 @@
       "mode": "live",
       "pair_address": "5GxdoPcK2LJ6QYcJ3uvtC37tgsFHma55ULFkufTYe49R",
       "entry_tx": "3mRKD2qffkKtWrna59uxEMbgPbCnNMWg81QHXuQhDsWvLeajoEcfw9VYFQVwGtMzMp544VhWxvsz5Brse9o9VYRa"
-    },
-    {
-      "mint": "Ho7iohoM6UN96yoxzBNzz9aXZpNW3AyUVuEmBdAQpump",
-      "symbol": "PPP",
-      "decimals": 6,
-      "amount_raw": "61979634737",
-      "entry_price_usd": 8.067165967041668e-05,
-      "cost_usd_remaining": 5.0,
-      "peak_price_usd": 8.067165967041668e-05,
-      "took_partial_tp": false,
-      "opened_at": "2026-11-10T18:47:43.149270+00:00",
-      "mode": "live",
-      "pair_address": "72jYfKk5H91YMLsgmyQWnm7nBK6rusqf8yLUnsFtECEf",
-      "entry_tx": "xQsFwcd1YwwW4VfGup8k3F4yum8b3V7CjBjvfuhGzkphrfFb7zf5Rk2UhjKvkczghv1nZXy1A3uR3CHbDipSw9j"
     }
   ],
   "cooldowns": {
     "EJv8TgQfN6gtYN8Z6KGyBeNPbVYmogmudfxiRA2Fpump": "2026-11-10T18:36:24.356157+00:00",
-    "66KbLTkLpPBPdhkRZs8XZk7Yw1DwuV3KYHKNTvmbpump": "2026-11-10T18:47:43.149270+00:00"
+    "66KbLTkLpPBPdhkRZs8XZk7Yw1DwuV3KYHKNTvmbpump": "2026-11-10T18:47:43.149270+00:00",
+    "Ho7iohoM6UN96yoxzBNzz9aXZpNW3AyUVuEmBdAQpump": "2026-11-10T18:49:45.063858+00:00"
   },
   "daily": {
     "date_utc": "2026-11-10",
-    "live_realized_pnl_usd": -1.6893,
+    "live_realized_pnl_usd": -2.6239,
     "paper_realized_pnl_usd": 0.0
   },
-  "last_run_at": "2026-11-10T18:47:43.149270+00:00"
+  "last_run_at": "2026-11-10T18:49:45.063858+00:00"
 }
