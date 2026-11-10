@@ -18,6 +18,14 @@ from bot.logic import (
     split_cost,
     token_ui,
 )
+from bot.reconcile import (
+    estimate_entry,
+    ignored_mint,
+    is_fresh,
+    is_meaningful,
+    read_trade_rows,
+    usdc_in_for_exit,
+)
 from bot.report import Report, redact
 from bot.safety import evaluate_report
 from bot.screen import best_pair, screen_pair
@@ -215,6 +223,14 @@ def _one_cycle(
         _write_report_file(root, report, secret)
         return False
 
+    if mode == "live" and rpc is not None and owner:
+        try:
+            _sync_wallet(state, cfg, jupiter, rpc, owner, report, now)
+        except RpcError as exc:
+            report.warnings.append(f"Nie porównałem portfela z listą pozycji ({exc}).")
+        except Exception as exc:
+            report.warnings.append(f"Nie porównałem portfela z listą pozycji ({type(exc).__name__}).")
+
     _say(f"Sprawdzenie {cycle_no}: pilnuję otwartych pozycji...", secret)
     for pos in list(state.positions_for(mode)):
         try:
@@ -270,6 +286,167 @@ def _one_cycle(
     return scanned
 
 
+def _sync_wallet(state, cfg, jupiter, rpc, owner, report, now) -> None:
+    """Adopt tokens the wallet holds and close ones the user already sold."""
+    balances = rpc.list_token_balances(owner)
+    rows = read_trade_rows(state.path.parent / "trades.csv")
+    known = {row.get("podpis") or "" for row in rows}
+    values = _quote_values(jupiter, cfg, balances, state)
+    for pos in list(state.positions_for("live")):
+        mint = pos.get("mint") or ""
+        if not mint:
+            continue
+        info = balances.get(mint) or {}
+        raw = int(info.get("raw") or 0)
+        decimals = int(info.get("decimals") or pos.get("decimals") or 0)
+        if is_meaningful(raw, decimals, values.get(mint)):
+            _adopt_size(pos, raw, decimals, rows)
+            continue
+        if is_fresh(pos.get("opened_at"), now):
+            continue
+        _close_external(pos, state, rpc, owner, report, now, known)
+    held = {pos.get("mint") for pos in state.positions_for("live")}
+    for mint, info in balances.items():
+        if ignored_mint(mint, cfg.usdc_mint) or mint in held:
+            continue
+        raw = int(info.get("raw") or 0)
+        decimals = int(info.get("decimals") or 0)
+        if not is_meaningful(raw, decimals, values.get(mint)):
+            continue
+        ui = raw / (10**decimals) if decimals else float(raw)
+        guess = estimate_entry(rows, mint, ui)
+        price = float(guess["price"] or 0)
+        value = values.get(mint)
+        if price <= 0 and value and ui:
+            price = value / ui
+        cost = float(guess["cost"] or 0) or (price * ui)
+        symbol = _clean_symbol(guess["symbol"] if guess["symbol"] != "?" else mint[:4])
+        state.data["positions"].append(
+            {
+                "mint": mint,
+                "symbol": symbol,
+                "decimals": decimals,
+                "amount_raw": str(raw),
+                "entry_price_usd": price,
+                "entry_mark_price": price,
+                "cost_usd_remaining": round(cost, 4),
+                "peak_price_usd": price,
+                "took_partial_tp": False,
+                "opened_at": guess["opened_at"] or now.isoformat(),
+                "mode": "live",
+                "pair_address": "",
+                "entry_tx": "",
+                "adopted": True,
+            }
+        )
+        report.notes.append(f"{symbol}: jest w portfelu, a nie było go na liście. Pilnuję go od teraz.")
+    state.save()
+
+
+def _quote_values(jupiter, cfg, balances: dict, state) -> dict[str, float | None]:
+    values: dict[str, float | None] = {}
+    mints = set(balances) | {pos.get("mint") for pos in state.positions_for("live")}
+    for mint in mints:
+        if not mint or ignored_mint(mint, cfg.usdc_mint):
+            continue
+        raw = int((balances.get(mint) or {}).get("raw") or 0)
+        if raw <= 0:
+            values[mint] = 0.0
+            continue
+        quote, _err = jupiter.quote(mint, cfg.usdc_mint, raw, cfg.slippage_bps)
+        if quote and quote.get("outAmount"):
+            values[mint] = int(quote["outAmount"]) / (10**cfg.usdc_decimals)
+        else:
+            values[mint] = None
+    return values
+
+
+def _adopt_size(pos: dict, raw: int, decimals: int, rows: list[dict]) -> None:
+    recorded = int(pos.get("amount_raw") or 0)
+    if raw == recorded:
+        return
+    ui = raw / (10**decimals) if decimals else float(raw)
+    if 0 < raw < recorded and recorded:
+        pos["cost_usd_remaining"] = round(float(pos.get("cost_usd_remaining") or 0) * (raw / recorded), 6)
+    else:
+        guess = estimate_entry(rows, pos["mint"], ui)
+        if guess["cost"] > 0:
+            pos["cost_usd_remaining"] = round(guess["cost"], 6)
+        if guess["price"] > 0:
+            pos["entry_price_usd"] = guess["price"]
+    pos["amount_raw"] = str(raw)
+    pos["decimals"] = decimals
+
+
+def _close_external(pos, state, rpc, owner, report, now, known: set[str] | None = None) -> None:
+    """The wallet no longer holds this token. Do not send a sell."""
+    mint = pos.get("mint") or ""
+    symbol = pos.get("symbol") or "?"
+    if not mint or not any(item.get("mint") == mint for item in state.positions_for("live")):
+        return
+    if known is None:
+        known = {row.get("podpis") or "" for row in read_trade_rows(state.path.parent / "trades.csv")}
+    proceeds = None
+    try:
+        txs = []
+        for signature in rpc.signatures(owner, 20):
+            if signature in known:
+                continue
+            try:
+                payload = rpc.transaction(signature)
+            except RpcError:
+                continue
+            if not payload:
+                continue
+            txs.append(
+                {
+                    "signature": signature,
+                    "blockTime": payload.get("blockTime"),
+                    "meta": payload.get("meta") or {},
+                }
+            )
+        proceeds = usdc_in_for_exit(txs, owner, mint, known, pos.get("opened_at"))
+    except RpcError:
+        proceeds = None
+    cost = float(pos.get("cost_usd_remaining") or 0)
+    pnl = None if proceeds is None else proceeds - cost
+    if pnl is not None:
+        state.add_realized("live", pnl)
+    decimals = int(pos.get("decimals") or 0)
+    ui = int(pos.get("amount_raw") or 0) / (10**decimals) if decimals else float(pos.get("amount_raw") or 0)
+    price = (proceeds / ui) if proceeds and ui else float(pos.get("entry_price_usd") or 0)
+    append_trade(
+        _trades_path(state),
+        {
+            "czas_utc": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "tryb": "prawdziwy",
+            "strona": "SPRZEDAZ",
+            "mint": mint,
+            "symbol": _clean_symbol(symbol),
+            "ilosc_tokenow": f"{ui:.8f}",
+            "cena_usd": f"{price:.10f}" if price else "",
+            "wartosc_usdc": f"{proceeds:.4f}" if proceeds is not None else "",
+            "zysk_usdc": f"{pnl:.4f}" if pnl is not None else "",
+            "powod": "sprzedaż ręczna",
+            "podpis": "",
+            "solscan": "",
+        },
+    )
+    state.remove_position(mint, "live")
+    state.mark_cooldown(mint, now)
+    state.save()
+    if proceeds is None:
+        report.notes.append(
+            f"{symbol}: sprzedałeś ręcznie w portfelu. Nie sprzedaję drugi raz. "
+            "Nie znalazłem kwoty USDC, więc nie wliczam tego do limitu straty."
+        )
+    else:
+        report.notes.append(
+            f"{symbol}: sprzedałeś ręcznie. Dostałeś około {proceeds:.2f} USDC, "
+            f"wynik {pnl:+.2f} USDC. Nie sprzedaję drugi raz."
+        )
+
+
 def _manage_position(pos, cfg, state, mode, jupiter, rpc, keypair, owner, blocked_sol, report, now):
     symbol = pos.get("symbol") or "?"
     mint = pos.get("mint") or ""
@@ -291,11 +468,12 @@ def _manage_position(pos, cfg, state, mode, jupiter, rpc, keypair, owner, blocke
             report.warnings.append(f"{symbol}: nie odczytałem salda ({exc})")
             on_chain = None
         if on_chain == 0:
-            state.remove_position(mint, mode)
-            state.save()
-            report.notes.append(
-                f"{symbol}: na portfelu nie ma już tego tokenu. Zdejmuję go z listy pozycji."
-            )
+            if is_fresh(pos.get("opened_at"), now):
+                report.notes.append(
+                    f"{symbol}: kupno dopiero co poszło i nie widzę jeszcze tokenu. Nie sprzedaję."
+                )
+                return
+            _close_external(pos, state, rpc, owner, report, now)
             return
         if on_chain is not None and 0 < on_chain < int(pos["amount_raw"]):
             old = int(pos["amount_raw"])
@@ -623,6 +801,14 @@ def _execute_buy(candidate, cfg, state, mode, jupiter, rpc, keypair, owner, repo
         if usdc_now < cfg.position_size_raw:
             have = usdc_now / (10**cfg.usdc_decimals)
             return f"za mało USDC ({have:.2f})"
+        try:
+            already = rpc.token_raw(owner, candidate.mint)
+        except RpcError as exc:
+            return f"nie sprawdziłem, czy token już jest w portfelu ({exc})"
+        if already > 0:
+            return "ten token już jest w portfelu"
+        if len(state.positions_for(mode)) >= cfg.max_open_positions:
+            return "jest już maksymalna liczba pozycji"
         transaction, tx_error = jupiter.swap_transaction(
             quote, owner, cfg.priority_fee_max_lamports
         )

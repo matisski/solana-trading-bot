@@ -69,6 +69,8 @@ Ten projekt jest teraz prywatny. Wtedy bot sprawdza ceny tylko raz na uruchomien
 
 Stop-loss nie jest natychmiastowy. Między sprawdzeniami mija około 30 sekund, a sam GitHub potrafi obudzić bota dużo później.
 
+Jak sprzedasz token sam w Phantom, bot to zobaczy. Zapisze to jako sprzedaż ręczną i nie będzie próbował sprzedać drugi raz. Przez 6 godzin nie kupi tego samego tokenu znowu. Liczy otwarte pozycje z tego, co naprawdę leży w portfelu, więc nie dokupi kolejnego, gdy trzy już tam są.
+
 ## 5. Jak czytać wyniki
 
 Najprościej otwórz plik `state/ostatni_raport.md` w tym projekcie. Jest po polsku.

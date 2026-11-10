@@ -53,4 +53,23 @@ jobs:
             exit 0
           fi
           git commit -m "Update trading state"
-          git push
+          branch=$(git rev-parse --abbrev-ref HEAD)
+          for attempt in 1 2 3 4 5; do
+            if git pull --rebase origin "$branch"; then
+              if git push origin "HEAD:$branch"; then
+                exit 0
+              fi
+            else
+              python -m bot.merge_state
+              git add state/state.json state/trades.csv state/ostatni_raport.md
+              GIT_EDITOR=true git rebase --continue || true
+              if git push origin "HEAD:$branch"; then
+                exit 0
+              fi
+            fi
+            echo "Zapis stanu nie wszedł, próba $attempt. Czekam i ponawiam."
+            git rebase --abort 2>/dev/null || true
+            sleep $((attempt * 3))
+          done
+          echo "Nie udało się zapisać stanu."
+          exit 1

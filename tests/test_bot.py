@@ -11,6 +11,7 @@ import yaml
 
 from bot.config import USDC_MINT, ConfigError, load_config, trading_mode
 from bot.engine import parse_loop_seconds, seconds_until_next_cycle
+from bot.reconcile import estimate_entry, is_meaningful, split_conflict, union_csv, union_state
 from bot.logic import decide_exit, impact_percent, sell_raw_amount, split_cost
 from bot.report import redact
 from bot.safety import evaluate_report
@@ -266,9 +267,61 @@ class RepoTests(unittest.TestCase):
         self.assertIn("LOOP_SECONDS", text)
         self.assertIn("github.event.repository.private == false && '270' || '0'", text)
         self.assertIn("timeout-minutes: 8", text)
+        self.assertIn("git pull --rebase", text)
+        self.assertIn("bot.merge_state", text)
         self.assertNotIn("\n  run: |", text)
         self.assertNotIn("while True", (ROOT / "main.py").read_text(encoding="utf-8"))
         self.assertNotIn("while True", (ROOT / "bot" / "engine.py").read_text(encoding="utf-8"))
+
+
+class ReconcileTests(unittest.TestCase):
+    def test_dust_is_not_a_position_and_a_real_bag_is(self):
+        self.assertFalse(is_meaningful(0, 6, 0.0))
+        self.assertFalse(is_meaningful(33435, 5, 0.01))
+        self.assertTrue(is_meaningful(602_815_105, 6, 5.0))
+        self.assertTrue(is_meaningful(15_229_744_841, 6, None))
+
+    def test_entry_uses_the_buy_that_matches_the_balance(self):
+        rows = [
+            {"strona": "KUPNO", "mint": "GATO", "symbol": "GATO", "ilosc_tokenow": "600", "wartosc_usdc": "5", "cena_usd": "0.0083", "czas_utc": "t1"},
+            {"strona": "KUPNO", "mint": "GATO", "symbol": "GATO", "ilosc_tokenow": "602", "wartosc_usdc": "5", "cena_usd": "0.0083", "czas_utc": "t2"},
+            {"strona": "KUPNO", "mint": "GATO", "symbol": "GATO", "ilosc_tokenow": "603", "wartosc_usdc": "5", "cena_usd": "0.00829", "czas_utc": "t3"},
+        ]
+        guess = estimate_entry(rows, "GATO", 603)
+        self.assertEqual(guess["opened_at"], "t3")
+        self.assertAlmostEqual(guess["cost"], 0.00829 * 603, places=4)
+
+    def test_union_keeps_both_tokens_and_the_larger_balance(self):
+        left = {
+            "last_run_at": "2026-11-10T18:58:00+00:00",
+            "positions": [
+                {"mint": "GATO", "amount_raw": "600", "symbol": "GATO"},
+                {"mint": "FORG", "amount_raw": "40000", "symbol": "forg"},
+            ],
+            "cooldowns": {},
+            "daily": {},
+        }
+        right = {
+            "last_run_at": "2026-11-10T19:10:00+00:00",
+            "positions": [{"mint": "GATO", "amount_raw": "602", "symbol": "GATO"}],
+            "cooldowns": {"GATO": "2026-11-10T19:10:00+00:00"},
+            "daily": {},
+        }
+        merged = union_state(left, right)
+        amounts = {pos["mint"]: pos["amount_raw"] for pos in merged["positions"]}
+        self.assertEqual(amounts["GATO"], "602")
+        self.assertEqual(amounts["FORG"], "40000")
+        self.assertIn("GATO", merged["cooldowns"])
+
+    def test_conflict_csv_keeps_every_row(self):
+        left = "czas_utc,strona,mint,podpis,wartosc_usdc\n18:36,KUPNO,GATO,sig1,5\n"
+        right = "czas_utc,strona,mint,podpis,wartosc_usdc\n18:36,KUPNO,GATO,sig1,5\n19:10,KUPNO,GATO,sig2,5\n"
+        text = union_csv(left, right)
+        self.assertEqual(text.count("KUPNO"), 2)
+        conflict = "<<<<<<< HEAD\n" + left + "=======\n" + right + ">>>>>>> bot\n"
+        sides = split_conflict(conflict)
+        self.assertIn("sig1", sides[0])
+        self.assertIn("sig2", sides[1])
 
 
 class LoopTests(unittest.TestCase):

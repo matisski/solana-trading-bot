@@ -90,6 +90,59 @@ class SolanaRpc:
         result = self.call("getBalance", [owner, {"commitment": "confirmed"}])
         return int(result["value"]) / 1_000_000_000
 
+    def list_token_balances(self, owner: str) -> dict[str, dict]:
+        """Every token in the wallet. Raises if either program scan fails.
+
+        A partial list must not be treated as an empty wallet, or the bot
+        would close positions that are still there.
+        """
+        found: dict[str, dict] = {}
+        for program in TOKEN_PROGRAMS:
+            result = self._by_program(owner, program)
+            for item in result:
+                mint = item["mint"]
+                slot = found.setdefault(
+                    mint,
+                    {"raw": 0, "decimals": item["decimals"], "ui": 0.0},
+                )
+                slot["raw"] += item["raw"]
+                slot["decimals"] = item["decimals"]
+                slot["ui"] = slot["raw"] / (10 ** item["decimals"]) if item["decimals"] else float(slot["raw"])
+        return found
+
+    def _by_program(self, owner: str, program: str) -> list[dict]:
+        result = self.call(
+            "getTokenAccountsByOwner",
+            [owner, {"programId": program}, {"encoding": "jsonParsed", "commitment": "confirmed"}],
+        )
+        rows = []
+        for account in (result or {}).get("value") or []:
+            try:
+                info = account["account"]["data"]["parsed"]["info"]
+                amount = info["tokenAmount"]
+                rows.append(
+                    {
+                        "mint": info["mint"],
+                        "raw": int(amount["amount"]),
+                        "decimals": int(amount.get("decimals") or 0),
+                    }
+                )
+            except (KeyError, TypeError, ValueError):
+                continue
+        return rows
+
+    def signatures(self, owner: str, limit: int = 20) -> list[str]:
+        result = self.call("getSignaturesForAddress", [owner, {"limit": int(limit)}])
+        if not isinstance(result, list):
+            return []
+        return [row["signature"] for row in result if isinstance(row, dict) and row.get("signature")]
+
+    def transaction(self, signature: str):
+        return self.call(
+            "getTransaction",
+            [signature, {"encoding": "jsonParsed", "maxSupportedTransactionVersion": 0}],
+        )
+
     def token_raw(self, owner: str, mint: str) -> int:
         total = self._by_filter(owner, {"mint": mint}, mint)
         if total > 0:
