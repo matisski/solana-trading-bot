@@ -1,8 +1,12 @@
 
 import requests
 import time
+import json
 
 DEX_URL = "https://api.dexscreener.com/token-profiles/latest/v1"
+
+with open("config.json", "r") as file:
+    config = json.load(file)
 
 def find_tokens():
     try:
@@ -11,13 +15,20 @@ def find_tokens():
         tokens = response.json()
 
         for token in tokens:
-            if token.get("chainId") == "solana":
-                print("Nowy token:", token.get("tokenAddress"))
-                print("Dex:", token.get("url"))
+            if token.get("chainId") != "solana":
+                continue
+
+            address = token.get("tokenAddress")
+            if not address:
+                continue
+
+            print("Wykryto token Solana:", address)
+            print("Link:", token.get("url"))
+            print("-" * 40)
 
     except Exception as error:
         print("Błąd:", error)
 
 while True:
     find_tokens()
-    time.sleep(60)
+    time.sleep(config["scan_interval_seconds"])
