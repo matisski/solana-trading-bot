@@ -24,9 +24,9 @@ GitHub często spóźnia uruchomienie co 5 minut. Stop nie zadziała w tej samej
 - brak
 
 ## Otwarte pozycje
-- GATO `HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump` — wejście 0.0082944172, teraz 0.0089172143 (+7.5%), wartość około 5.06 USDC, szczyt 0.010328892
+- GATO `HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump` — wejście 0.0082944172, teraz 0.0093864974 (+13.2%), wartość około 5.33 USDC, szczyt 0.010328892
 - FLOAT `Bv1a7cEj5aRnJQhMw4kRQqAFesMSd5LwcDnUzq52BMmr` — wejście 0.01020079, teraz 0.010805278 (+5.9%), wartość około 3.17 USDC, szczyt 0.010805278
-- GTA6 `4kjruqGHDsSqkMdFfCjV7Vb62HPFhtXyWc2t6JpQzDnz` — wejście 0.010069889, teraz 0.0099914513 (-0.8%), wartość około 2.98 USDC, szczyt 0.010135679
+- GTA6 `4kjruqGHDsSqkMdFfCjV7Vb62HPFhtXyWc2t6JpQzDnz` — wejście 0.010069889, teraz 0.010072974 (+0.0%), wartość około 3.00 USDC, szczyt 0.010135679
 
 ## Ostrzeżenia
 - FLOAT: brak trasy sprzedaży na Jupiter (HTTP 429). Zostawiam.
