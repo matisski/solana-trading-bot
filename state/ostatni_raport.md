@@ -22,11 +22,11 @@ DexScreener: 47 tokenów Solana, 43 odpadło na prostym filtrze.
 - brak
 
 ## Otwarte pozycje
-- GATO `HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump` — wejście 0.0082944172, teraz 0.0097044653 (+17.0%), wartość około 5.51 USDC, szczyt 0.0097401741
+- GATO `HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump` — wejście 0.0082944172, teraz 0.010319791 (+24.4%), wartość około 5.86 USDC, szczyt 0.010319791
 
 ## Pominięte tokeny
-- CBUCKS (`DtcicPCKTKeAh7TDEzTym3hXeoHAoMiBdYJhMYxZpump`): za mały obrót godzinowy (23535 USD)
+- CBUCKS (`DtcicPCKTKeAh7TDEzTym3hXeoHAoMiBdYJhMYxZpump`): za mały obrót godzinowy (21729 USD)
 - OnlyCats (`BAftaSb1HVqBn5723w72WLcXU7YASSgmVxQxJJAJpump`): za mała płynność (3177 USD)
 - MAYA (`HqZZhbXWm17vnY29uj4cgczNUWo9o8VLUWsN4RH8pump`): za mała płynność (1697 USD)
-- THUG (`HoqJaoes6yfL8YEsHGfENwVKT7LrAPy97ZDg9hmBu4Ep`): za mała płynność (45632 USD)
-- DACITY (`5tBXkPVh716zSXHNZSr8i1PX7e6Uuj46JnBLdYchpump`): już zbyt mocno urosło (1854% w godzinę)
+- THUG (`HoqJaoes6yfL8YEsHGfENwVKT7LrAPy97ZDg9hmBu4Ep`): za mała płynność (46854 USD)
+- DACITY (`5tBXkPVh716zSXHNZSr8i1PX7e6Uuj46JnBLdYchpump`): już zbyt mocno urosło (203% w godzinę)
