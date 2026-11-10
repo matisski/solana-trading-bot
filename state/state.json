@@ -8,7 +8,7 @@
       "entry_price_usd": 0.008294417240921658,
       "entry_mark_price": 0.0082450422339699,
       "cost_usd_remaining": 4.709695,
-      "peak_price_usd": 0.010319790629733247,
+      "peak_price_usd": 0.010328892184014723,
       "took_partial_tp": false,
       "opened_at": "2026-11-10T19:10:20.715383+00:00",
       "mode": "live",
@@ -27,5 +27,5 @@
     "live_realized_pnl_usd": -2.3807,
     "paper_realized_pnl_usd": 0.0
   },
-  "last_run_at": "2026-11-10T20:07:00.226865+00:00"
+  "last_run_at": "2026-11-10T20:11:18.501091+00:00"
 }
