@@ -103,13 +103,14 @@ Jak zatrzymać bota: ustaw `DRY_RUN` na `true` albo w Actions otwórz **Solana M
 ## 7. Co bot odrzuca
 
 - token młodszy niż 45 minut,
-- małą płynność albo mały obrót,
+- płynność poniżej 50 000 USD albo mały obrót,
+- token, który w ostatniej godzinie urósł już o ponad 100%, albo w ostatnich 5 minutach spada,
 - dużo więcej sprzedaży niż kupna,
 - słaby wynik RugCheck,
 - token, przy którym ktoś nadal może dodrukować monety albo zamrozić portfele,
 - jeden portfel z za dużym udziałem,
 - płynność, która nie jest zablokowana albo spalona,
-- token, którego Jupiter nie umie sprzedać z powrotem na USDC, albo sprzedaż mocno psuje cenę.
+- token, którego Jupiter nie umie od razu sprzedać z powrotem na USDC, gdy sam ten obrót zjada więcej niż około 3%, albo rusza cenę o więcej niż 1,5%.
 
 ## 8. Liczby, które możesz zmienić
 
@@ -120,11 +121,13 @@ Są w pliku `desk.yaml`. Domyślnie:
 - na jedno szukanie najwyżej **1** nowe kupno, żeby nie wydać całych 15 USDC naraz. Przy pełnej pętli szukanie jest około co 90 sekund, nie co 30
 - dzienny limit straty: **10 USD** (liczy się zrealizowana strata, dzień od północy UTC). Po limicie bot nie kupuje do następnego dnia, ale dalej pilnuje otwartych pozycji
 - przy **2x** sprzedaje połowę
-- twardy stop: **−8%** od ceny kupna
+- twardy stop: **−8%** od ceny, którą dałoby się dostać zaraz po kupnie (nie od samego kosztu wejścia, bo sam obrót już trochę zjada). Jak cena skoczy między sprawdzeniami, strata może być większa niż 8%
 - trailing stop: **10%** od najwyższej ceny, dopiero gdy cena była już wyżej niż przy kupnie
 - minimalny wiek pary: **45 minut**
+- minimalna płynność: **50 000 USD**, minimalny obrót godzinowy: **30 000 USD**
 - poślizg: **3%**
-- maksymalny wpływ na cenę: **5%**
+- maksymalny wpływ na cenę przy kupnie i przy sprzedaży: **1,5%**
+- test sprzedaży przed kupnem musi oddać co najmniej **97%** USDC
 - minimum SOL, żeby w ogóle wysłać transakcję: **0,005**
 
 Memecoiny są bardzo ryzykowne. Te limity nie dają gwarancji zysku. Możesz stracić wpłacone USDC.

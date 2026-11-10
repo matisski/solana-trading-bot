@@ -77,4 +77,22 @@ def screen_pair(pair: dict, cfg: Config, now_ms: int) -> str | None:
         return f"słaby ruch w górę ({change_pct:.1f}% w godzinę)"
     if change_pct > cfg.max_price_change_h1_pct:
         return f"już zbyt mocno urosło ({change_pct:.0f}% w godzinę)"
+
+    minute = (pair.get("priceChange") or {}).get("m5")
+    if minute is not None:
+        try:
+            minute_pct = float(minute)
+        except (TypeError, ValueError):
+            minute_pct = None
+        if minute_pct is not None and minute_pct <= -cfg.max_m5_drop_pct:
+            return f"spadek w ostatnich 5 minutach ({minute_pct:.1f}%)"
+
+    recent = (pair.get("txns") or {}).get("m5") or {}
+    try:
+        recent_buys = int(recent.get("buys") or 0)
+        recent_sells = int(recent.get("sells") or 0)
+    except (TypeError, ValueError):
+        recent_buys, recent_sells = 0, 0
+    if recent_sells >= 15 and recent_sells / max(recent_buys, 1) > cfg.max_sell_to_buy_ratio_m5:
+        return "za dużo sprzedaży w ostatnich 5 minutach"
     return None

@@ -43,6 +43,8 @@ class Config:
     min_buys_h1: int
     min_price_change_h1_pct: float
     max_price_change_h1_pct: float
+    max_m5_drop_pct: float
+    max_sell_to_buy_ratio_m5: float
     allowed_quote_mints: list[str]
     max_score_normalised: float
     max_top_holder_pct: float
@@ -106,12 +108,14 @@ _DEFAULTS = {
     "oplaty": {"rezerwa_sol": 0.005, "max_priority_fee_lamports": 200_000},
     "filtry": {
         "min_wiek_pary_minuty": 45,
-        "min_plynnosc_usd": 20_000,
-        "min_obrot_h1_usd": 8_000,
+        "min_plynnosc_usd": 50_000,
+        "min_obrot_h1_usd": 30_000,
         "max_stosunek_sprzedaz_kupno_h1": 1.5,
         "min_kupna_h1": 25,
         "min_zmiana_h1_procent": 5,
-        "max_zmiana_h1_procent": 200,
+        "max_zmiana_h1_procent": 100,
+        "max_spadek_m5_procent": 5,
+        "max_stosunek_sprzedaz_kupno_m5": 1.8,
     },
     "pary_quote": [SOL_MINT, USDC_MINT, USDT_MINT],
     "rugcheck": {
@@ -122,8 +126,8 @@ _DEFAULTS = {
     },
     "jupiter": {
         "slippage_bps": 300,
-        "max_wplyw_ceny_procent": 5,
-        "min_odzysk_przy_sprzedazy_procent": 70,
+        "max_wplyw_ceny_procent": 1.5,
+        "min_odzysk_przy_sprzedazy_procent": 97,
         "quote_url": "https://lite-api.jup.ag/swap/v1/quote",
         "swap_url": "https://lite-api.jup.ag/swap/v1/swap",
     },
@@ -201,6 +205,13 @@ def load_config(path: Path) -> Config:
         ),
         max_price_change_h1_pct=_as_float(
             _dig(data, "filtry", "max_zmiana_h1_procent"), "filtry.max_zmiana_h1_procent"
+        ),
+        max_m5_drop_pct=_as_float(
+            _dig(data, "filtry", "max_spadek_m5_procent"), "filtry.max_spadek_m5_procent"
+        ),
+        max_sell_to_buy_ratio_m5=_as_float(
+            _dig(data, "filtry", "max_stosunek_sprzedaz_kupno_m5"),
+            "filtry.max_stosunek_sprzedaz_kupno_m5",
         ),
         allowed_quote_mints=[str(item).strip() for item in _dig(data, "pary_quote")],
         max_score_normalised=_as_float(_dig(data, "rugcheck", "max_wynik"), "rugcheck.max_wynik"),

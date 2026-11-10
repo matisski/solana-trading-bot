@@ -21,16 +21,19 @@ def decide_exit(
     take_profit_sell_fraction: float,
     stop_loss_pct: float,
     trailing_stop_pct: float,
+    stop_basis: float | None = None,
 ) -> ExitDecision:
     """One decision per run. Hard stop first, then take-profit, then trail.
 
-    The trail arms only after price has traded above the entry. Otherwise a
-    fresh position would be one tick away from a trail that is looser than
-    the hard stop anyway.
+    ``stop_basis`` is the executable price just after the buy (a sell quote).
+    The buy itself is a worse price than that, so measuring the stop from the
+    raw entry makes the spread look like a loss and trips the stop early.
+    Take-profit stays on the price actually paid.
     """
     if entry <= 0 or price <= 0:
         return ExitDecision("hold", 0.0, "")
-    if price <= entry * (1 - stop_loss_pct / 100):
+    basis = stop_basis if stop_basis is not None and stop_basis > 0 else entry
+    if price <= basis * (1 - stop_loss_pct / 100):
         return ExitDecision("sell", 1.0, "stop_loss")
     if not took_partial and price >= entry * take_profit_multiple:
         fraction = 1.0 if take_profit_sell_fraction >= 0.999 else take_profit_sell_fraction

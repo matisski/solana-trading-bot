@@ -57,6 +57,14 @@ class ExitTests(unittest.TestCase):
     def test_small_dip_holds(self):
         self.assertEqual(self.decide(1.0, 1.0, 0.93).action, "hold")
 
+    def test_buy_spread_alone_does_not_trip_stop(self):
+        # Paid 1.00, but a sell quote right after the fill is 0.97.
+        # 0.91 is already -9% versus cash, and only about -6% versus that quote.
+        decision = decide_exit(1.0, 1.0, 0.91, False, 2.0, 0.5, 8.0, 10.0, stop_basis=0.97)
+        self.assertEqual(decision.action, "hold")
+        tripped = decide_exit(1.0, 1.0, 0.97 * 0.92, False, 2.0, 0.5, 8.0, 10.0, stop_basis=0.97)
+        self.assertEqual(tripped.reason, "stop_loss")
+
     def test_take_profit_sells_half(self):
         decision = self.decide(1.0, 2.0, 2.0)
         self.assertEqual(decision.reason, "take_profit")
@@ -99,6 +107,12 @@ class SafetyTests(unittest.TestCase):
         pair = self._pair(created=now_ms - 120 * 60_000, change=20, buys=100, sells=400)
         self.assertIn("sprzedaży", screen_pair(pair, CFG, now_ms))
 
+    def test_five_minute_dump_is_skipped(self):
+        now_ms = 1_000_000_000_000
+        pair = self._pair(created=now_ms - 120 * 60_000, change=20)
+        pair["priceChange"]["m5"] = -12
+        self.assertIn("5 minutach", screen_pair(pair, CFG, now_ms))
+
     def test_clean_report_passes(self):
         self.assertIsNone(evaluate_report(self._report(), CFG))
 
@@ -136,7 +150,7 @@ class SafetyTests(unittest.TestCase):
             "liquidity": {"usd": 50_000},
             "pairCreatedAt": created,
             "txns": {"h1": {"buys": buys, "sells": sells}},
-            "volume": {"h1": 20_000},
+            "volume": {"h1": 40_000},
             "priceChange": {"h1": change},
         }
 
@@ -217,6 +231,10 @@ class RepoTests(unittest.TestCase):
         self.assertEqual(CFG.stop_loss_pct, 8)
         self.assertEqual(CFG.trailing_stop_pct, 10)
         self.assertEqual(CFG.min_pair_age_minutes, 45)
+        self.assertEqual(CFG.min_liquidity_usd, 50_000)
+        self.assertEqual(CFG.min_volume_h1_usd, 30_000)
+        self.assertEqual(CFG.max_price_impact_pct, 1.5)
+        self.assertEqual(CFG.min_roundtrip_pct, 97)
         self.assertEqual(CFG.sol_fee_reserve, 0.005)
         self.assertEqual(CFG.slippage_bps, 300)
 

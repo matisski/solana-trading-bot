@@ -31,12 +31,14 @@ oplaty:
 
 filtry:
   min_wiek_pary_minuty: 45          # nie kupuj tokenu młodszego niż 45 minut
-  min_plynnosc_usd: 20000
-  min_obrot_h1_usd: 8000
+  min_plynnosc_usd: 50000           # cienkie pule pump.fun potrafią spaść kilkanaście procent naraz
+  min_obrot_h1_usd: 30000
   max_stosunek_sprzedaz_kupno_h1: 1.5
   min_kupna_h1: 25
   min_zmiana_h1_procent: 5          # w ostatniej godzinie cena ma iść w górę
-  max_zmiana_h1_procent: 200        # pomiń token, który już wystrzelił
+  max_zmiana_h1_procent: 100        # pomiń token, który już mocno wystrzelił
+  max_spadek_m5_procent: 5          # nie kupuj, gdy ostatnie 5 minut to już zjazd
+  max_stosunek_sprzedaz_kupno_m5: 1.8
 
 # Pary liczone tylko do SOL, USDC albo USDT. Decyzja i tak jest po adresie, nie po nazwie.
 pary_quote:
@@ -52,8 +54,8 @@ rugcheck:
 
 jupiter:
   slippage_bps: 300                 # 300 = 3% poślizgu
-  max_wplyw_ceny_procent: 5         # pomiń, gdy swap rusza cenę o więcej niż 5%
-  min_odzysk_przy_sprzedazy_procent: 70
+  max_wplyw_ceny_procent: 1.5       # pomiń, gdy kupno albo sprzedaż rusza cenę o więcej niż 1,5%
+  min_odzysk_przy_sprzedazy_procent: 97  # test sprzedaży musi oddać co najmniej 97% USDC
   quote_url: "https://lite-api.jup.ag/swap/v1/quote"
   swap_url: "https://lite-api.jup.ag/swap/v1/swap"
 

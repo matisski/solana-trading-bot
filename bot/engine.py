@@ -42,6 +42,7 @@ class Candidate:
     pair_address: str
     decimals: int
     buy_quote: dict
+    entry_mark_price: float
 
 
 def run(root: Path | None = None) -> int:
@@ -312,6 +313,7 @@ def _manage_position(pos, cfg, state, mode, jupiter, rpc, keypair, owner, blocke
     price = price_from_usdc(proceeds, amount_raw, int(pos["decimals"]))
     peak = max(float(pos.get("peak_price_usd") or 0), price)
     pos["peak_price_usd"] = peak
+    mark = float(pos.get("entry_mark_price") or 0)
     decision = decide_exit(
         float(pos["entry_price_usd"]),
         peak,
@@ -321,6 +323,7 @@ def _manage_position(pos, cfg, state, mode, jupiter, rpc, keypair, owner, blocke
         cfg.take_profit_sell_fraction,
         cfg.stop_loss_pct,
         cfg.trailing_stop_pct,
+        stop_basis=mark or None,
     )
     if decision.action != "sell":
         _remember_position(report, pos, price)
@@ -583,6 +586,7 @@ def _full_check(mint, symbol, pair, cfg, rugs, jupiter) -> tuple[Candidate | Non
     recovery = back / cfg.position_size_usd * 100
     if recovery < cfg.min_roundtrip_pct:
         return None, f"test sprzedaży zwraca tylko {recovery:.0f}% USDC"
+    entry_mark_price = price_from_usdc(back, out_raw, decimals)
     return (
         Candidate(
             mint=mint,
@@ -590,6 +594,7 @@ def _full_check(mint, symbol, pair, cfg, rugs, jupiter) -> tuple[Candidate | Non
             pair_address=str(pair.get("pairAddress") or ""),
             decimals=decimals,
             buy_quote=buy_quote,
+            entry_mark_price=entry_mark_price,
         ),
         "",
     )
@@ -643,8 +648,9 @@ def _execute_buy(candidate, cfg, state, mode, jupiter, rpc, keypair, owner, repo
         "decimals": candidate.decimals,
         "amount_raw": str(out_raw),
         "entry_price_usd": entry,
+        "entry_mark_price": candidate.entry_mark_price,
         "cost_usd_remaining": round(cost, 4),
-        "peak_price_usd": entry,
+        "peak_price_usd": candidate.entry_mark_price or entry,
         "took_partial_tp": False,
         "opened_at": now.isoformat(),
         "mode": mode,
