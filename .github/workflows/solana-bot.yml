@@ -3,6 +3,7 @@
 # GitHub i tak często spóźnia cron. Stop-loss nie jest natychmiastowy.
 # Odświeżenie rejestracji cron w GitHubie. Zegar zostaje bez zmian.
 # Ponowna rejestracja zapasowego zegara co 5 minut. Sam łańcuch uruchomień się nie zmienia.
+# Ręczne wznowienie łańcucha. Zasady handlu bez zmian.
 
 name: Solana Memecoin Bot
 
