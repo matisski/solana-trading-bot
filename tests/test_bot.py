@@ -270,7 +270,8 @@ class RepoTests(unittest.TestCase):
         data = yaml.safe_load(text)
         trigger = data.get(True, data.get("on"))
         self.assertIn("workflow_dispatch", trigger)
-        self.assertEqual(trigger["schedule"][0]["cron"], "*/5 * * * *")
+        self.assertNotIn("schedule", trigger)
+        self.assertNotIn("push", trigger)
         self.assertEqual(data["permissions"]["contents"], "write")
         self.assertEqual(data["concurrency"]["group"], "solana-memecoin-bot")
         self.assertFalse(data["concurrency"]["cancel-in-progress"])
@@ -284,9 +285,8 @@ class RepoTests(unittest.TestCase):
         self.assertIn("git pull --rebase", text)
         self.assertIn("bot.merge_state", text)
         self.assertEqual(data["permissions"]["actions"], "write")
-        self.assertIn("gh workflow run solana-bot.yml --ref main", text)
-        self.assertIn("BOT_ENABLED", text)
-        self.assertIn("vars.BOT_ENABLED != 'false'", text)
+        self.assertNotIn("gh workflow run", text)
+        self.assertNotIn("cron:", text)
         self.assertNotIn("\n  run: |", text)
         self.assertNotIn("while True", (ROOT / "main.py").read_text(encoding="utf-8"))
         self.assertNotIn("while True", (ROOT / "bot" / "engine.py").read_text(encoding="utf-8"))
@@ -363,7 +363,7 @@ class ReconcileTests(unittest.TestCase):
 
 class LoopTests(unittest.TestCase):
     def test_kill_switch_is_only_explicit_false(self):
-        self.assertTrue(bot_enabled({}))
+        self.assertFalse(bot_enabled({}))
         self.assertTrue(bot_enabled({"BOT_ENABLED": "true"}))
         self.assertFalse(bot_enabled({"BOT_ENABLED": "false"}))
 

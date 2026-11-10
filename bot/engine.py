@@ -55,16 +55,16 @@ class Candidate:
 
 
 def bot_enabled(environ: dict[str, str] | None = None) -> bool:
-    """False only when the repo variable BOT_ENABLED is exactly false."""
+    """Trading stays off until the repo variable BOT_ENABLED is exactly true."""
     env = os.environ if environ is None else environ
-    return str(env.get("BOT_ENABLED", "")).strip().lower() != "false"
+    return str(env.get("BOT_ENABLED", "")).strip().lower() == "true"
 
 
 def run(root: Path | None = None) -> int:
     root = root or ROOT
     secret = os.environ.get("SOLANA_PRIVATE_KEY", "")
     if not bot_enabled():
-        _say("Bot jest wyłączony (BOT_ENABLED=false). Nic nie kupuję i nie sprzedaję.", secret)
+        _say("Bot jest wyłączony. Ustaw zmienną BOT_ENABLED na true, żeby handlował. Nic nie kupuję i nie sprzedaję.", secret)
         return 0
     try:
         cfg = load_config(root / "desk.yaml")

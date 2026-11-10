@@ -1,23 +1,11 @@
-# Harmonogram co 5 minut plus ręczne uruchomienie.
-# Zdarzenie push jest tylko dla tego pliku. Zapis stanu nie odpala bota od nowa.
-# GitHub i tak często spóźnia cron. Stop-loss nie jest natychmiastowy.
-# Odświeżenie rejestracji cron w GitHubie. Zegar zostaje bez zmian.
-# Ponowna rejestracja zapasowego zegara co 5 minut. Sam łańcuch uruchomień się nie zmienia.
-# Ręczne wznowienie łańcucha. Zasady handlu bez zmian.
-# Próg płynności jest w desk.yaml. Ten komentarz tylko kolejkuje nowe uruchomienie.
-# Szersza lista kandydatów. Filtry kupna bez zmian.
-# Kolejne uruchomienie z większą pulą adresów. Filtry bez zmian.
+# Bot jest WYŁĄCZONY. Nie ma zegara i nie odpala sam siebie.
+# Żeby włączyć z powrotem, ustaw zmienną BOT_ENABLED na true
+# i przywróć harmonogram oraz krok następnego uruchomienia.
 
 name: Solana Memecoin Bot
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "*/5 * * * *"
-  # Tylko zmiana tego pliku. Zapis stanu (state/) nie odpala bota od nowa.
-  push:
-    paths:
-      - .github/workflows/solana-bot.yml
 
 concurrency:
   group: solana-memecoin-bot
@@ -84,9 +72,3 @@ jobs:
           done
           echo "Nie udało się zapisać stanu."
           exit 1
-
-      - name: Następne uruchomienie
-        if: always() && vars.BOT_ENABLED != 'false'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run solana-bot.yml --ref main
