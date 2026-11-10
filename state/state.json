@@ -14,6 +14,21 @@
       "mode": "live",
       "pair_address": "5E3dXLXGwmTDCokA51WYYaKttjFZBwqCoyUHBUi5gt2m",
       "entry_tx": "5w3JAzijjfTmoxztpt5p2LezLpTuegwp2WkMC8xTnHH3KVHShRzNT8nvHdWhaLpbQkrzR56AYfs8bJyeP9SKfpSJ"
+    },
+    {
+      "mint": "Bv1a7cEj5aRnJQhMw4kRQqAFesMSd5LwcDnUzq52BMmr",
+      "symbol": "FLOAT",
+      "decimals": 6,
+      "amount_raw": "293749219",
+      "entry_price_usd": 0.010200789934891452,
+      "entry_mark_price": 0.010173326008123412,
+      "cost_usd_remaining": 2.996474,
+      "peak_price_usd": 0.010289589910365006,
+      "took_partial_tp": false,
+      "opened_at": "2026-11-10T20:45:31.502736+00:00",
+      "mode": "live",
+      "pair_address": "FJk9sajdc2Q4heRPPu3yLzkmf2ZByZkpiHQLv9e2bn5A",
+      "entry_tx": "28t99QDAhVWo44EpDNSaNo9pkGuvNGCA88X5QJh8LUizYRuHtSW6B8sA2xrtgwX7eiRJuezbWMB5rKeeQHhPb3oX"
     }
   ],
   "cooldowns": {
@@ -27,5 +42,5 @@
     "live_realized_pnl_usd": -2.3807,
     "paper_realized_pnl_usd": 0.0
   },
-  "last_run_at": "2026-11-10T20:45:18.022776+00:00"
+  "last_run_at": "2026-11-10T20:49:36.219649+00:00"
 }
