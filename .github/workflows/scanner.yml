@@ -1,4 +1,5 @@
 
+
 name: Solana Token Scanner
 
 on:
@@ -10,16 +11,12 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt
 
-      - name: Run scanner
-        run: python main.py
+      - run: python main.py
