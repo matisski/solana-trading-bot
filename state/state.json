@@ -1,27 +1,13 @@
 {
   "positions": [
     {
-      "mint": "HsprHxBRgiVaQdRf3TnKNuZZtaX9JUSPgMFdAkk6pump",
-      "symbol": "GATO",
-      "decimals": 6,
-      "amount_raw": "600668730",
-      "entry_price_usd": 0.008320319521569646,
-      "cost_usd_remaining": 4.997756,
-      "peak_price_usd": 0.008320319521569646,
-      "took_partial_tp": false,
-      "opened_at": "2026-11-10T18:36:24.356157+00:00",
-      "mode": "live",
-      "pair_address": "5E3dXLXGwmTDCokA51WYYaKttjFZBwqCoyUHBUi5gt2m",
-      "entry_tx": "4dcNT4mAq32KuNR76r3fxXfK6JLFVrTRf32JmrH1bsMK2FuSaSpWNTzkhhUe8sFKwwYJ5VVanv6Uy6fTdtnaqnB2"
-    },
-    {
       "mint": "BWJfBNeXpapG7uoqByp5KSwWgCQba8QcDmA2DQiEpump",
       "symbol": "Leonida",
       "decimals": 6,
       "amount_raw": "15229744841",
       "entry_price_usd": 0.0003282944151921368,
       "cost_usd_remaining": 4.99984,
-      "peak_price_usd": 0.0003399169227092634,
+      "peak_price_usd": 0.00036017996737756376,
       "took_partial_tp": false,
       "opened_at": "2026-11-10T18:38:25.219851+00:00",
       "mode": "live",
@@ -29,27 +15,28 @@
       "entry_tx": "3mRKD2qffkKtWrna59uxEMbgPbCnNMWg81QHXuQhDsWvLeajoEcfw9VYFQVwGtMzMp544VhWxvsz5Brse9o9VYRa"
     },
     {
-      "mint": "66KbLTkLpPBPdhkRZs8XZk7Yw1DwuV3KYHKNTvmbpump",
-      "symbol": "If",
+      "mint": "Ho7iohoM6UN96yoxzBNzz9aXZpNW3AyUVuEmBdAQpump",
+      "symbol": "PPP",
       "decimals": 6,
-      "amount_raw": "28747963789",
-      "entry_price_usd": 0.0001739253616951187,
+      "amount_raw": "61979634737",
+      "entry_price_usd": 8.067165967041668e-05,
       "cost_usd_remaining": 5.0,
-      "peak_price_usd": 0.0001739253616951187,
+      "peak_price_usd": 8.067165967041668e-05,
       "took_partial_tp": false,
-      "opened_at": "2026-11-10T18:40:32.979716+00:00",
+      "opened_at": "2026-11-10T18:47:43.149270+00:00",
       "mode": "live",
-      "pair_address": "DiDYAEAToWnRgHcbCH9XP76cjy4YuV18Mk5u9Z6CEPQB",
-      "entry_tx": "5dkyPhecubnWRGYBZP7wMDBBUJvAE5UfYVkheg5FfUGymbKkG9pNkHxLoosevWt9Z6NDbq7DFNP32Be4Drwj1Xd9"
+      "pair_address": "72jYfKk5H91YMLsgmyQWnm7nBK6rusqf8yLUnsFtECEf",
+      "entry_tx": "xQsFwcd1YwwW4VfGup8k3F4yum8b3V7CjBjvfuhGzkphrfFb7zf5Rk2UhjKvkczghv1nZXy1A3uR3CHbDipSw9j"
     }
   ],
   "cooldowns": {
-    "EJv8TgQfN6gtYN8Z6KGyBeNPbVYmogmudfxiRA2Fpump": "2026-11-10T18:36:24.356157+00:00"
+    "EJv8TgQfN6gtYN8Z6KGyBeNPbVYmogmudfxiRA2Fpump": "2026-11-10T18:36:24.356157+00:00",
+    "66KbLTkLpPBPdhkRZs8XZk7Yw1DwuV3KYHKNTvmbpump": "2026-11-10T18:47:43.149270+00:00"
   },
   "daily": {
     "date_utc": "2026-11-10",
-    "live_realized_pnl_usd": -0.7928,
+    "live_realized_pnl_usd": -1.6893,
     "paper_realized_pnl_usd": 0.0
   },
-  "last_run_at": "2026-11-10T18:40:32.979716+00:00"
+  "last_run_at": "2026-11-10T18:47:43.149270+00:00"
 }
