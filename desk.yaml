@@ -1,0 +1,67 @@
+# Ustawienia bota. Możesz zmieniać liczby.
+# Ten plik NIE włącza trybu próbnego.
+#
+# Prawdziwy handel: w GitHubie jest sekret SOLANA_PRIVATE_KEY
+# i zmienna DRY_RUN nie jest ustawiona na true.
+# Tryb próbny: usuń klucz albo ustaw zmienną DRY_RUN na true.
+#
+# Bot płaci oficjalnym USDC z Phantom (sieć Solana). SOL jest tylko na opłaty.
+
+platnosc:
+  # Nie zmieniaj tego adresu. To zwykłe USDC, które widać w Phantom.
+  mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+  decimals: 6
+
+pozycja:
+  wielkosc_usd: 5.0                 # jedno kupno = 5 USDC
+  max_otwartych: 3                  # najwyżej 3 tokeny naraz
+  max_nowych_na_uruchomienie: 1     # na jedno uruchomienie najwyżej 1 nowe kupno
+  limit_straty_dziennej_usd: 10.0   # po tej stracie (UTC) nie ma nowych kupien do jutra
+  pauza_po_sprzedazy_minuty: 360    # nie kupuj tego samego tokenu przez 6 godzin
+
+wyjscia:
+  take_profit_razy: 2.0             # przy 2x sprzedaj część
+  take_profit_sprzedaj_czesc: 0.5   # połowa pozycji
+  stop_loss_procent: 8.0            # sprzedaj wszystko przy -8% od ceny kupna
+  trailing_stop_procent: 10.0       # sprzedaj, gdy cena spadnie 10% od szczytu
+
+oplaty:
+  rezerwa_sol: 0.005                # poniżej tej ilości SOL bot nic nie wysyła
+  max_priority_fee_lamports: 200000 # górny limit napiwku dla sieci (0.0002 SOL)
+
+filtry:
+  min_wiek_pary_minuty: 45          # nie kupuj tokenu młodszego niż 45 minut
+  min_plynnosc_usd: 20000
+  min_obrot_h1_usd: 8000
+  max_stosunek_sprzedaz_kupno_h1: 1.5
+  min_kupna_h1: 25
+  min_zmiana_h1_procent: 5          # w ostatniej godzinie cena ma iść w górę
+  max_zmiana_h1_procent: 200        # pomiń token, który już wystrzelił
+
+# Pary liczone tylko do SOL, USDC albo USDT. Decyzja i tak jest po adresie, nie po nazwie.
+pary_quote:
+  - "So11111111111111111111111111111111111111112"
+  - "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+  - "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+
+rugcheck:
+  max_wynik: 30                     # wyższy wynik RugCheck = groźniej
+  max_udzial_portfela_procent: 15   # jeden portfel nie może mieć więcej
+  min_lp_zablokowane_procent: 90    # płynność ma być zablokowana albo spalona
+  max_oplata_transferu_procent: 1
+
+jupiter:
+  slippage_bps: 300                 # 300 = 3% poślizgu
+  max_wplyw_ceny_procent: 5         # pomiń, gdy swap rusza cenę o więcej niż 5%
+  min_odzysk_przy_sprzedazy_procent: 70
+  quote_url: "https://lite-api.jup.ag/swap/v1/quote"
+  swap_url: "https://lite-api.jup.ag/swap/v1/swap"
+
+skan:
+  max_pelnych_sprawdzen: 6
+  timeout_sekundy: 20
+  potwierdzenie_sekundy: 45
+
+rpc:
+  # Używane tylko wtedy, gdy nie ma sekretu RPC_URL.
+  publiczny: "https://api.mainnet-beta.solana.com"
